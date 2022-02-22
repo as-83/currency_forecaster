@@ -1,6 +1,7 @@
-package forecaster;
+package forecaster.domain;
 
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 
 public class Rate {
     private LocalDate date;
@@ -29,7 +30,9 @@ public class Rate {
 
     @Override
     public String toString() {
-        return  date +
+        String datePattern = "E dd.MM.yyyy";
+        DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern(datePattern);
+        return  dateFormatter.format(date) +
                 " " + value;
     }
 }
