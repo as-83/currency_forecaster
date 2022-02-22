@@ -1,5 +1,6 @@
 package forecaster;
 
+import java.io.IOException;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
@@ -23,9 +24,15 @@ import java.util.stream.IntStream;
 
 public class Main {
     public static void main(String[] args) {
-        String[] command = new Scanner(System.in).nextLine().split(" ");
-        List<Integer> rateList = RateRepo.getRates(command[1]);
-        List<Integer> forecasts = Forecaster.getForecast(rateList, command[2]);
+        String[] commands = new Scanner(System.in).nextLine().split(" ");
+        List<Rate> rateHistory = null;
+        try {
+            rateHistory = RateRepo.getRates(commands[1]);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        rateHistory.stream().limit(100).forEach(System.out::println);
+        List<Integer> forecasts = Forecaster.getForecast(rateHistory, commands[2]);
         printForecast(forecasts);
     }
 
