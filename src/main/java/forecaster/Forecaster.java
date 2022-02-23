@@ -1,30 +1,42 @@
 package forecaster;
 
-import forecaster.algorithms.LastSevenAvgForecast;
 import forecaster.algorithms.ForecastType;
+import forecaster.algorithms.LastSevenAvgForecast;
 import forecaster.domain.Rate;
 import forecaster.sources.DataSource;
 import forecaster.sources.FileDataSource;
 
 import java.io.IOException;
-import java.util.Collections;
 import java.util.List;
 
-
+/**
+ * Класс Forecaster выполняет прогноз курса валюты
+ * <p>
+ * основываясь на данных, полученных классом,
+ * реализующим  interface DataSource,
+ * <p>
+ * Прогноз осуществляется по алгоритму, заданному в классе,
+ * реализующем  interface ForecastType,
+ */
 public class Forecaster {
     private DataSource dataSource = new FileDataSource();
-    private ForecastType forecast  = new LastSevenAvgForecast();
+    private ForecastType forecastType = new LastSevenAvgForecast();
 
-    public List<Rate> getForecast(String currencyCode, int forecastDuration){
-        List<Rate> forecastsList = Collections.emptyList();
-        try {
-            List<Rate>  ratesFromSrc = dataSource.getRates(currencyCode);
-            forecastsList = forecast.getForecast(ratesFromSrc, forecastDuration);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return forecastsList;
-
+    /**
+     * Прогноз курса выбранной валюты
+     * основыванный на исторических данных курса валюты
+     * <p>
+     * по алгоритму прогнозирования, который задается классом,
+     * реализующим  interface ForecastType
+     *
+     * @param currencyCode     код валюты
+     * @param forecastDuration срок прогноза
+     * @return Прогноз курса валюты на заданное количество дней
+     * @throws IOException Если организация не была найдена
+     */
+    public List<Rate> getForecast(String currencyCode, int forecastDuration) throws IOException {
+        List<Rate> ratesFromSrc = dataSource.getRates(currencyCode);
+        return forecastType.getForecast(ratesFromSrc, forecastDuration);
     }
 
     public void setDataSource(DataSource dataSource) {
@@ -32,6 +44,6 @@ public class Forecaster {
     }
 
     public void setForecastType(ForecastType forecast) {
-        this.forecast = forecast;
+        this.forecastType = forecast;
     }
 }

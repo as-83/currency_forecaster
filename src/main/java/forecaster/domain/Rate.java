@@ -3,6 +3,10 @@ package forecaster.domain;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
+/**
+ * Класс Rate представляет курс
+ * валюты в определенную дату
+ */
 public class Rate {
     private LocalDate date;
     private double value;
