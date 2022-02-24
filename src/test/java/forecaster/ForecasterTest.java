@@ -8,6 +8,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+
 class ForecasterTest {
     @Test
     void whenDurationOneThenSizeOne() throws IOException {
@@ -38,5 +39,4 @@ class ForecasterTest {
         rates.forEach(System.out::println);
         assertTrue(Math.abs(rates.get(0).getValue() - 78.11) < 0.009);
     }
-
 }

@@ -23,11 +23,18 @@ public class Forecaster {
     private ForecastType forecastType = new LastSevenAvgForecast();
 
     /**
-     * Прогноз курса выбранной валюты
+     * Прогноз курса выбранной валюты,
      * основыванный на исторических данных курса валюты
      * <p>
-     * по алгоритму прогнозирования, который задается классом,
-     * реализующим  interface ForecastType
+     * Источник данных- класс, реализующий интерфейс
+     * forecaster.sources.DataSource
+     * Источник данных по умолчанию - файлы формата CSV с разделителем  ';'
+     *
+     *
+     * Алгоритм прогнозирования задается классом,
+     * реализующим  interface forecaster.algorithms.ForecastType.
+     * Алгоритм по умолчанию:  Среднее арифметическое
+     * значение на основании 7 последних значений
      *
      * @param currencyCode     код валюты
      * @param forecastDuration срок прогноза

@@ -18,7 +18,7 @@ import java.util.Scanner;
  */
 public class FileDataSource implements DataSource {
 
-    public static final String DATASOURCE_PATH = "D:/sul/java/currency_forecaster/data";
+    public static final String DATASOURCE_PATH = "./data";
     private static final String FILE_NAME_SUFFIX = "_F01_02_2002_T01_02_2022.csv";
     public static final int DATE_ROW_NUMBER = 0;
     public static final int RATE_ROW_NUMBER = 1;
@@ -51,6 +51,5 @@ public class FileDataSource implements DataSource {
         }
 
         return rates;
-
     }
 }
