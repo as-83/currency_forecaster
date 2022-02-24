@@ -3,6 +3,7 @@ package forecaster.sources;
 import forecaster.domain.Rate;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDate;
@@ -18,7 +19,7 @@ import java.util.Scanner;
  */
 public class FileDataSource implements DataSource {
 
-    public static final String DATASOURCE_PATH = "./data";
+    public static final String DATASOURCE_PATH = "D:/sul/java/currency_forecaster/data";
     private static final String FILE_NAME_SUFFIX = "_F01_02_2002_T01_02_2022.csv";
     public static final int DATE_ROW_NUMBER = 0;
     public static final int RATE_ROW_NUMBER = 1;
@@ -43,7 +44,8 @@ public class FileDataSource implements DataSource {
 
         while (scanner.hasNext()) {
             String[] rowSells = scanner.nextLine().split(CELL_SEPARATOR);
-            double value = Double.parseDouble(rowSells[RATE_ROW_NUMBER].replace(",", "."));
+            double val = Double.parseDouble(rowSells[RATE_ROW_NUMBER].replace(",", "."));
+            BigDecimal value = BigDecimal.valueOf (val);
             String dateValue = rowSells[DATE_ROW_NUMBER];
             DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
             LocalDate date = LocalDate.parse(dateValue, dateTimeFormatter);

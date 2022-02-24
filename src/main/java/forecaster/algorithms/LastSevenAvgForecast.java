@@ -2,11 +2,12 @@ package forecaster.algorithms;
 
 import forecaster.domain.Rate;
 
-import java.time.Duration;
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.Period;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -35,27 +36,31 @@ public class LastSevenAvgForecast implements ForecastType {
 
         List<Rate> forecasts = new ArrayList<>();
 
-        if (rates.size() > 0) {
-            LocalDate lastDateInHistory = rates.get(0).getDate();
-            int absentDaysCount = Period.between(lastDateInHistory, LocalDate.now()).getDays();
+        if (rates.size() <= 0) {
+            return Collections.emptyList();
+        }
 
-            forecastDuration += absentDaysCount;
-            ArrayDeque<Rate> lastSevenRates = rates.stream().limit(DAYS_LIMIT)
-                    .collect(Collectors.toCollection(ArrayDeque::new));
+        LocalDate lastDateInHistory = rates.get(0).getDate();
+        int absentDaysCount = Period.between(lastDateInHistory, LocalDate.now()).getDays();
 
-            for (int i = 1; i <= forecastDuration ; i++) {
-                double avgValue = lastSevenRates.stream().mapToDouble(Rate::getValue)
-                        .average().orElse(0);
+        forecastDuration += absentDaysCount;
+        ArrayDeque<Rate> lastSevenRates = rates.stream()
+                .limit(DAYS_LIMIT)
+                .collect(Collectors.toCollection(ArrayDeque::new));
 
-                LocalDate nextDate = lastDateInHistory.plusDays(i);
-                Rate forecastRate = new Rate(nextDate, avgValue);
+        for (int i = 1; i <= forecastDuration; i++) {
+            BigDecimal avgValue = lastSevenRates.stream()
+                    .map(Rate::getValue)
+                    .reduce(BigDecimal.ZERO, BigDecimal::add).divide(BigDecimal.valueOf(DAYS_LIMIT), 2);
 
-                lastSevenRates.removeLast();
-                lastSevenRates.addFirst(forecastRate);
+            LocalDate nextDate = lastDateInHistory.plusDays(i);
+            Rate forecastRate = new Rate(nextDate, avgValue);
 
-                if (i > absentDaysCount) {
-                    forecasts.add(forecastRate);
-                }
+            lastSevenRates.removeLast();
+            lastSevenRates.addFirst(forecastRate);
+
+            if (i > absentDaysCount) {
+                forecasts.add(forecastRate);
             }
         }
         return forecasts;

@@ -1,5 +1,6 @@
 package forecaster.domain;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
@@ -9,9 +10,9 @@ import java.time.format.DateTimeFormatter;
  */
 public class Rate {
     private LocalDate date;
-    private double value;
+    private BigDecimal value;
 
-    public Rate(LocalDate date, double value) {
+    public Rate(LocalDate date, BigDecimal value) {
         this.date = date;
         this.value = value;
     }
@@ -20,16 +21,8 @@ public class Rate {
         return date;
     }
 
-    public void setDate(LocalDate date) {
-        this.date = date;
-    }
-
-    public double getValue() {
+    public BigDecimal getValue() {
         return value;
-    }
-
-    public void setValue(double value) {
-        this.value = value;
     }
 
     @Override
