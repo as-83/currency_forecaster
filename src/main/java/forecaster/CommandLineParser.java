@@ -6,11 +6,21 @@ import forecaster.domain.ForecastPeriod;
 
 import java.util.Arrays;
 
+/**
+ * Класс CommandLineParser выполняет парсинг
+ * команды пользователя
+ */
 public class CommandLineParser {
 
     private static final int CURRENCY_CODE_INDEX = 1;
     private static final int FORECAST_PERIOD_INDEX = 2;
 
+    /**
+     * Парсинг команд в строке
+     *
+     * @param commandLine     строка введенная пользователем
+     * @return Команда
+     */
     public static Command parse(String commandLine) {
 
         Command command = new Command();
@@ -18,16 +28,23 @@ public class CommandLineParser {
         String[] commandLineParts = commandLine.trim().split(" ");
 
         if (isValid(commandLineParts)) {
-            String currencyCode = commandLineParts[CURRENCY_CODE_INDEX];
-            int forecastPeriod = Integer.parseInt(commandLineParts[FORECAST_PERIOD_INDEX]);
+            String currencyCode = commandLineParts[CURRENCY_CODE_INDEX].toUpperCase();
+            String fPeriod = commandLineParts[FORECAST_PERIOD_INDEX].toUpperCase();
+            ForecastPeriod forecastPeriod = ForecastPeriod.valueOf(fPeriod);
             command.setCurrencyCode(Currency.valueOf(currencyCode));
-            command.setForecastPeriod(forecastPeriod);
+            command.setForecastPeriod(forecastPeriod.getDayCount());
             command.setCorrect(true);
         }
 
         return command;
     }
 
+    /**
+     * Валидация команд
+     *
+     * @param commandLineParts     массив комманд
+     * @return true если все комманды корректные, иначе false
+     */
     public static boolean isValid(String[] commandLineParts) {
         if (commandLineParts.length != 3) {
             return false;

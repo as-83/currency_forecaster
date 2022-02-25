@@ -6,5 +6,5 @@ import java.io.IOException;
 import java.util.List;
 
 public interface DataSource {
-    public List<Rate> getRates(String currencyCode) throws IOException;
+    public List<Rate> getRates(String currencyCode);
 }

@@ -29,9 +29,8 @@ public class Forecaster {
      * @param currencyCode     код валюты
      * @param forecastDuration срок прогноза
      * @return Прогноз курса валюты на заданное количество дней
-     * @throws IOException Если организация не была найдена
      */
-    public List<Rate> getForecast(String currencyCode, int forecastDuration) throws IOException {
+    public List<Rate> getForecast(String currencyCode, int forecastDuration){
         List<Rate> ratesFromSrc = dataSource.getRates(currencyCode);
         return forecastType.getForecast(ratesFromSrc, forecastDuration);
     }

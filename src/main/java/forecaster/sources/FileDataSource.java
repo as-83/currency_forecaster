@@ -34,22 +34,27 @@ public class FileDataSource implements DataSource {
      * @throws IOException Если произошла ошибка при чтении файла
      */
     @Override
-    public List<Rate> getRates(String currencyCode) throws IOException {
+    public List<Rate> getRates(String currencyCode) {
 
         List<Rate> rates = new ArrayList<>();
         Path path = Paths.get(DATASOURCE_PATH + "/" + currencyCode + FILE_NAME_SUFFIX);
 
-        Scanner scanner = new Scanner(path);
-        scanner.nextLine();
+        Scanner scanner = null;
+        try {
+            scanner = new Scanner(path);
+            scanner.nextLine();
 
-        while (scanner.hasNext()) {
-            String[] rowSells = scanner.nextLine().split(CELL_SEPARATOR);
-            double val = Double.parseDouble(rowSells[RATE_ROW_NUMBER].replace(",", "."));
-            BigDecimal value = BigDecimal.valueOf (val);
-            String dateValue = rowSells[DATE_ROW_NUMBER];
-            DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
-            LocalDate date = LocalDate.parse(dateValue, dateTimeFormatter);
-            rates.add(new Rate(date, value));
+            while (scanner.hasNext()) {
+                String[] rowSells = scanner.nextLine().split(CELL_SEPARATOR);
+                double val = Double.parseDouble(rowSells[RATE_ROW_NUMBER].replace(",", "."));
+                BigDecimal value = BigDecimal.valueOf (val);
+                String dateValue = rowSells[DATE_ROW_NUMBER];
+                DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
+                LocalDate date = LocalDate.parse(dateValue, dateTimeFormatter);
+                rates.add(new Rate(date, value));
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
         }
 
         return rates;

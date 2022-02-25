@@ -1,5 +1,6 @@
 package forecaster;
 
+import forecaster.domain.Command;
 import forecaster.domain.Rate;
 
 import java.io.IOException;
@@ -10,64 +11,58 @@ import java.util.Scanner;
 
 /**
  * Класс Client осуществляет взаимодействие с пользователем:
- *
+ * <p>
  * получает от пользователя комманду выполнить прогноз курса
- *
+ * <p>
  * выбранной из списка валюты, передает её обработчику
- *
+ * <p>
  * и выводит результат работы в консоль в отформатированном виде
+ *
  * 1. Чтобы работало в одном jar-нике из консоли
  * 2. Ориентироваться на имена команд
  * 3. вынести парсинг входных команд в отдельный класс
- *                  4. Бигдецимал для денег.
+ * 4. Бигдецимал для денег.
  * 5. Может измениться период, лучше не тернарка.
  * 6. Код валют в енам
  * 7. не использовать throws
- *                  8. assertJ
+ * 8. assertJ
  */
 public class Client {
 
-    private static final int CURRENCY_CODE_INDEX = 1;
-    private static final int FORECAST_DURATION_INDEX = 2;
     public static final String MENU_TEXT = "\nВведите команду. Примеры:\n" +
             "Получить прогноз курса валюты на завтра - " + "rate TRY tomorrow\n" +
             "Получить прогноз курса валюты на 7 дней - " + "rate USD week\n" +
             "USD - доллар США,  TRY - турецкая лира, EUR -  Евро\n" +
             "Выйти из программы - exit";
-    private static final String IOEXCEPTION_MESSAGE = "\nЧто-то пошло не так... Попробуйте еще раз.\n";
-    private static final String INCORRECT_COMMAND_MESSAGE = "\nНе верный формат комманды! Попробуйте еще раз!\n";
+    private static final String INCORRECT_COMMAND_MESSAGE = "\nНеверный формат комманды! Попробуйте еще раз!\n";
 
     private static final Scanner scanner = new Scanner(System.in);
-    public static final String EXIT_MESSAGE = "The program closed";
-    public static final String TOMORROW = "tomorrow";
+    public static final String EXIT_MESSAGE = "Работа программы завершена";
+    public static final String EXIT_COMMAND = "exit";
+    private static final String EMPTY_RESULT_MESSAGE = "Результат отсутствует!";
 
     public static void main(String[] args) {
         Forecaster forecaster = new Forecaster();
 
         while (true) {
             System.out.println(MENU_TEXT);
-            String[] commands = scanner.nextLine().split(" ");
+            String commandLine = scanner.nextLine();
 
-            if (commands.length != 0 && commands[0].equalsIgnoreCase("exit")) {
+            if (EXIT_COMMAND.equalsIgnoreCase(commandLine.trim())) {
                 System.out.println(EXIT_MESSAGE);
                 break;
             }
 
-            if (commands.length == 3) {
-                String forecastPeriod = commands[FORECAST_DURATION_INDEX];
-                String currencyCode = commands[CURRENCY_CODE_INDEX];
-                int forecastDuration = TOMORROW.equalsIgnoreCase(forecastPeriod) ? 1 : 7;//TODO
-                List<Rate> rates = null;
-                try {
-                    rates = forecaster.getForecast(currencyCode, forecastDuration);
-                    printForecast(rates);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                    System.out.println(IOEXCEPTION_MESSAGE);
-                }
-            } else {
+            Command command = CommandLineParser.parse(commandLine);
+
+            if (!command.isCorrect()) {
                 System.out.println(INCORRECT_COMMAND_MESSAGE);
+                continue;
             }
+
+            String currencyCode = command.getCurrencyCode().name();
+            List<Rate> rates = forecaster.getForecast(currencyCode, command.getForecastPeriod());
+            printForecast(rates);
 
         }
 
@@ -81,6 +76,10 @@ public class Client {
      * @param rates Прогноз курса валюты
      */
     private static void printForecast(List<Rate> rates) {
+        if (rates.isEmpty()) {
+            System.out.println(EMPTY_RESULT_MESSAGE);
+            return;
+        }
         DecimalFormat valueFormatter = new DecimalFormat("###.##");
         String datePattern = "E dd.MM.yyyy";
         DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern(datePattern);
