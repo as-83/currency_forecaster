@@ -8,7 +8,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.List;
 
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 
 class ForecasterTest {
@@ -43,4 +43,5 @@ class ForecasterTest {
         BigDecimal currentValue =  rates.get(0).getValue().setScale(2, RoundingMode.HALF_UP);
         assertThat(currentValue.compareTo(expectedValue)).isEqualTo(0);
     }
+
 }
