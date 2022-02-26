@@ -18,7 +18,7 @@ import java.util.stream.Collectors;
  * Алгоритм прогнозирования: Среднее арифметическое
  * значение на основании 7 последних значений
  */
-public class LastSevenAvgForecast implements ForecastType {
+public class LastSevenAvgForecast implements ForecastAlgorithm {
     private static final long DAYS_LIMIT = 7;
 
     /**
@@ -27,9 +27,9 @@ public class LastSevenAvgForecast implements ForecastType {
      * Алгоритм прогнозирования: Среднее арифметическое
      * значение на основании 7 последних значений
      *
-     * @param rates            код валюты
-     * @param forecastDuration исторических данные курса валюты
-     * @return Прогноз курса валюты на заданное количество дней
+     * @param rates            список исторических данных курса валюты
+     * @param forecastDuration длительность прогноза в днях
+     * @return список прогнозируемых значений курса валюты на заданное количество дней
      */
     @Override
     public List<Rate> getForecast(List<Rate> rates, int forecastDuration) {

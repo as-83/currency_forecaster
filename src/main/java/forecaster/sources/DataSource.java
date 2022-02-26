@@ -2,9 +2,16 @@ package forecaster.sources;
 
 import forecaster.domain.Rate;
 
-import java.io.IOException;
 import java.util.List;
 
+/**
+ * Получение списка исторических значений
+ * курса валюты по коду данной валюты
+ */
 public interface DataSource {
-    public List<Rate> getRates(String currencyCode);
+    /**
+     * @param currencyCode код валюты
+     * @return Исторических значения курса валюты
+     */
+    List<Rate> getRates(String currencyCode);
 }

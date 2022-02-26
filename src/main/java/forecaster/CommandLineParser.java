@@ -7,8 +7,9 @@ import forecaster.domain.ForecastPeriod;
 import java.util.Arrays;
 
 /**
- * Класс CommandLineParser выполняет парсинг
- * команды пользователя
+ * Класс CommandLineParser выполняет
+ * парсинг команд из строки:
+ * код валюты и срок прогноза в днях
  */
 public class CommandLineParser {
 
@@ -16,10 +17,10 @@ public class CommandLineParser {
     private static final int FORECAST_PERIOD_INDEX = 2;
 
     /**
-     * Парсинг команд в строке
+     * Парсинг команд из строки
      *
-     * @param commandLine     строка введенная пользователем
-     * @return Команда
+     * @param commandLine     строка, введенная пользователем
+     * @return класс Command с полями: код валюты и срок прогноза в днях
      */
     public static Command parse(String commandLine) {
 

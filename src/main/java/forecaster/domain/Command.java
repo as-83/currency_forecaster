@@ -1,14 +1,14 @@
 package forecaster.domain;
 
 /**
- * Класс Command представляет команду
- * пользователя
+ * Класс Command представляет код валюты,
+ * период прогноза  и корректость команды
  */
 public class Command {
+
+    private boolean correct;
     private int forecastPeriod;
     private Currency currencyCode;
-    private boolean correct;
-
 
     public int getForecastPeriod() {
         return forecastPeriod;
