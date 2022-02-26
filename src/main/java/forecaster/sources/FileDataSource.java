@@ -14,7 +14,6 @@ import java.util.Scanner;
 
 /**
  * Класс FileDataSource считывает исторические данные курса
- * <p>
  * валюты из файла формата CSV. Разделитель - ';'
  */
 public class FileDataSource implements DataSource {
@@ -31,7 +30,6 @@ public class FileDataSource implements DataSource {
      *
      * @param currencyCode код валюты
      * @return список ежедневного курса  валюты с заданным кодом
-     * @throws IOException Если произошла ошибка при чтении файла
      */
     @Override
     public List<Rate> getRates(String currencyCode) {

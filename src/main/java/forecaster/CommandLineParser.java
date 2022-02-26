@@ -19,7 +19,7 @@ public class CommandLineParser {
      * Парсинг команд в строке
      *
      * @param commandLine     строка введенная пользователем
-     * @return Команда
+     * @return класс Command с полями: код валюты и срок прогноза в днях
      */
     public static Command parse(String commandLine) {
 
