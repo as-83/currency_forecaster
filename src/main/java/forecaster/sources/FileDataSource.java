@@ -25,11 +25,11 @@ public class FileDataSource implements DataSource {
     public static final String CELL_SEPARATOR = ";";
 
     /**
-     * Получение исторических данных курса валюты
-     * из файла формата CSV, разделитель - ';'
+     * Предоставляет список значений  исторических данных курса валюты
+     * по заданному коду
      *
      * @param currencyCode код валюты
-     * @return список ежедневного курса  валюты с заданным кодом
+     * @return список значений  исторических данных курса валюты
      */
     @Override
     public List<Rate> getRates(String currencyCode) {
@@ -37,7 +37,7 @@ public class FileDataSource implements DataSource {
         List<Rate> rates = new ArrayList<>();
         Path path = Paths.get(DATASOURCE_PATH + "/" + currencyCode + FILE_NAME_SUFFIX);
 
-        Scanner scanner = null;
+        Scanner scanner;
         try {
             scanner = new Scanner(path);
             scanner.nextLine();

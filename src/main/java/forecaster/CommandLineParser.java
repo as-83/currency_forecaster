@@ -48,7 +48,7 @@ public class CommandLineParser {
      * @param commandLineParts     массив комманд
      * @return true если все комманды корректные, иначе false
      */
-    public static boolean isValid(String[] commandLineParts) {
+    private static boolean isValid(String[] commandLineParts) {
         if (commandLineParts.length != 3) {
             return false;
         }
