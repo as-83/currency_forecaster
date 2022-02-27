@@ -13,13 +13,15 @@ import java.util.Arrays;
  */
 public class CommandLineParser {
 
+    private static final int ACTION_COMMAND_INDEX = 0;
     private static final int CURRENCY_CODE_INDEX = 1;
     private static final int FORECAST_PERIOD_INDEX = 2;
+    private static final String ACTION_COMMAND = "rate";
 
     /**
      * Парсинг команд из строки
      *
-     * @param commandLine     строка, введенная пользователем
+     * @param commandLine     строка с командами
      * @return класс Command с полями: код валюты и срок прогноза в днях
      */
     public static Command parse(String commandLine) {
@@ -50,6 +52,7 @@ public class CommandLineParser {
         if (commandLineParts.length != 3) {
             return false;
         }
+        boolean isFirstArgValid = ACTION_COMMAND.equalsIgnoreCase(commandLineParts[ACTION_COMMAND_INDEX]);
 
         boolean isCurrencyCodeValid = Arrays.stream(Currency.values())
                 .map(Enum::name)
@@ -58,6 +61,6 @@ public class CommandLineParser {
                 .map(Enum::name)
                 .anyMatch(p -> p.equalsIgnoreCase(commandLineParts[FORECAST_PERIOD_INDEX]));
 
-        return isPeriodValid && isCurrencyCodeValid;
+        return isFirstArgValid && isPeriodValid && isCurrencyCodeValid;
     }
 }
