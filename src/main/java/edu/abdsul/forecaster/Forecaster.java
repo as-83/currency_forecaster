@@ -1,11 +1,11 @@
-package forecaster;
+package edu.abdsul.forecaster;
 
-import forecaster.algorithm.ForecastAlgorithm;
-import forecaster.algorithm.LastSevenAvgForecast;
-import forecaster.domain.CurrencyCode;
-import forecaster.domain.Rate;
-import forecaster.source.DataSource;
-import forecaster.source.FileDataSource;
+import edu.abdsul.forecaster.algorithm.ForecastAlgorithm;
+import edu.abdsul.forecaster.algorithm.LastSevenAvgForecast;
+import edu.abdsul.forecaster.domain.CurrencyCode;
+import edu.abdsul.forecaster.domain.Rate;
+import edu.abdsul.forecaster.source.DataSource;
+import edu.abdsul.forecaster.source.FileDataSource;
 
 import java.util.List;
 

@@ -1,8 +1,8 @@
-package forecaster;
+package edu.abdsul.forecaster;
 
-import forecaster.domain.Command;
-import forecaster.domain.CurrencyCode;
-import forecaster.domain.Rate;
+import edu.abdsul.forecaster.domain.Command;
+import edu.abdsul.forecaster.domain.CurrencyCode;
+import edu.abdsul.forecaster.domain.Rate;
 
 import java.text.DecimalFormat;
 import java.time.format.DateTimeFormatter;

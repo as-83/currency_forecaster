@@ -1,7 +1,7 @@
-package forecaster.source;
+package edu.abdsul.forecaster.source;
 
-import forecaster.domain.CurrencyCode;
-import forecaster.domain.Rate;
+import edu.abdsul.forecaster.domain.CurrencyCode;
+import edu.abdsul.forecaster.domain.Rate;
 
 import java.util.List;
 

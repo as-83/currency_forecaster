@@ -1,7 +1,7 @@
-package forecaster;
+package edu.abdsul.forecaster;
 
-import forecaster.domain.CurrencyCode;
-import forecaster.domain.Rate;
+import edu.abdsul.forecaster.domain.CurrencyCode;
+import edu.abdsul.forecaster.domain.Rate;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 

@@ -1,8 +1,8 @@
-package forecaster;
+package edu.abdsul.forecaster;
 
-import forecaster.domain.Command;
-import forecaster.domain.CurrencyCode;
-import forecaster.domain.ForecastPeriod;
+import edu.abdsul.forecaster.domain.Command;
+import edu.abdsul.forecaster.domain.CurrencyCode;
+import edu.abdsul.forecaster.domain.ForecastPeriod;
 
 import java.util.Arrays;
 

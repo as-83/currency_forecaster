@@ -1,6 +1,6 @@
-package forecaster;
+package edu.abdsul.forecaster;
 
-import forecaster.domain.Command;
+import edu.abdsul.forecaster.domain.Command;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;

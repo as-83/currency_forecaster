@@ -1,4 +1,4 @@
-package forecaster.domain;
+package edu.abdsul.forecaster.domain;
 
 /**
  * Временные периоды

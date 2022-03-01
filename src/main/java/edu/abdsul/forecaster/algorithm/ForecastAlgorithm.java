@@ -1,6 +1,6 @@
-package forecaster.algorithm;
+package edu.abdsul.forecaster.algorithm;
 
-import forecaster.domain.Rate;
+import edu.abdsul.forecaster.domain.Rate;
 
 import java.util.List;
 
