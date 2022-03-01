@@ -1,10 +1,11 @@
 package forecaster;
 
-import forecaster.algorithms.ForecastAlgorithm;
-import forecaster.algorithms.LastSevenAvgForecast;
+import forecaster.algorithm.ForecastAlgorithm;
+import forecaster.algorithm.LastSevenAvgForecast;
+import forecaster.domain.CurrencyCode;
 import forecaster.domain.Rate;
-import forecaster.sources.DataSource;
-import forecaster.sources.FileDataSource;
+import forecaster.source.DataSource;
+import forecaster.source.FileDataSource;
 
 import java.util.List;
 
@@ -28,7 +29,7 @@ public class Forecaster {
      * @param forecastDuration срок прогноза в днях начиная с завтрашнего дня
      * @return Прогноз курса валюты на заданное количество дней
      */
-    public List<Rate> getForecast(String currencyCode, int forecastDuration) {
+    public List<Rate> getForecast(CurrencyCode currencyCode, int forecastDuration) {
         List<Rate> ratesFromSrc = dataSource.getRates(currencyCode);
         return forecastType.getForecast(ratesFromSrc, forecastDuration);
     }

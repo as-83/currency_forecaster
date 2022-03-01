@@ -1,5 +1,6 @@
-package forecaster.sources;
+package forecaster.source;
 
+import forecaster.domain.CurrencyCode;
 import forecaster.domain.Rate;
 
 import java.io.IOException;
@@ -18,11 +19,12 @@ import java.util.Scanner;
  */
 public class FileDataSource implements DataSource {
 
-    public static final String DATASOURCE_PATH = "D:/sul/java/currency_forecaster/data";
+    private static final String DATASOURCE_PATH = "./data";
     private static final String FILE_NAME_SUFFIX = "_F01_02_2002_T01_02_2022.csv";
-    public static final int DATE_ROW_NUMBER = 0;
-    public static final int RATE_ROW_NUMBER = 1;
-    public static final String CELL_SEPARATOR = ";";
+    private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("dd.MM.yyyy");
+    private static final int DATE_ROW_NUMBER = 0;
+    private static final int RATE_ROW_NUMBER = 1;
+    private static final String CELL_SEPARATOR = ";";
 
     /**
      * Предоставляет список значений  исторических данных курса валюты
@@ -32,10 +34,10 @@ public class FileDataSource implements DataSource {
      * @return список значений  исторических данных курса валюты
      */
     @Override
-    public List<Rate> getRates(String currencyCode) {
+    public List<Rate> getRates(CurrencyCode currencyCode) {
 
         List<Rate> rates = new ArrayList<>();
-        Path path = Paths.get(DATASOURCE_PATH + "/" + currencyCode + FILE_NAME_SUFFIX);
+        Path path = Paths.get(DATASOURCE_PATH + "/" + currencyCode.name() + FILE_NAME_SUFFIX);
 
         Scanner scanner;
         try {
@@ -47,8 +49,7 @@ public class FileDataSource implements DataSource {
                 double val = Double.parseDouble(rowSells[RATE_ROW_NUMBER].replace(",", "."));
                 BigDecimal value = BigDecimal.valueOf (val);
                 String dateValue = rowSells[DATE_ROW_NUMBER];
-                DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
-                LocalDate date = LocalDate.parse(dateValue, dateTimeFormatter);
+                LocalDate date = LocalDate.parse(dateValue, DATE_FORMATTER);
                 rates.add(new Rate(date, value));
             }
         } catch (IOException e) {

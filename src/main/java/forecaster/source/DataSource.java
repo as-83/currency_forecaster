@@ -1,5 +1,6 @@
-package forecaster.sources;
+package forecaster.source;
 
+import forecaster.domain.CurrencyCode;
 import forecaster.domain.Rate;
 
 import java.util.List;
@@ -13,5 +14,5 @@ public interface DataSource {
      * @param currencyCode код валюты
      * @return Исторических значения курса валюты
      */
-    List<Rate> getRates(String currencyCode);
+    List<Rate> getRates(CurrencyCode currencyCode);
 }

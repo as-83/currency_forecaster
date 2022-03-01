@@ -1,7 +1,7 @@
 package forecaster;
 
 import forecaster.domain.Command;
-import forecaster.domain.Currency;
+import forecaster.domain.CurrencyCode;
 import forecaster.domain.ForecastPeriod;
 
 import java.util.Arrays;
@@ -34,7 +34,7 @@ public class CommandLineParser {
             String currencyCode = commandLineParts[CURRENCY_CODE_INDEX].toUpperCase();
             String fPeriod = commandLineParts[FORECAST_PERIOD_INDEX].toUpperCase();
             ForecastPeriod forecastPeriod = ForecastPeriod.valueOf(fPeriod);
-            command.setCurrencyCode(Currency.valueOf(currencyCode));
+            command.setCurrencyCode(CurrencyCode.valueOf(currencyCode));
             command.setForecastPeriod(forecastPeriod.getDayCount());
             command.setCorrect(true);
         }
@@ -54,7 +54,7 @@ public class CommandLineParser {
         }
         boolean isFirstArgValid = ACTION_COMMAND.equalsIgnoreCase(commandLineParts[ACTION_COMMAND_INDEX]);
 
-        boolean isCurrencyCodeValid = Arrays.stream(Currency.values())
+        boolean isCurrencyCodeValid = Arrays.stream(CurrencyCode.values())
                 .map(Enum::name)
                 .anyMatch(c -> c.equalsIgnoreCase(commandLineParts[CURRENCY_CODE_INDEX]));
         boolean isPeriodValid = Arrays.stream(ForecastPeriod.values())

@@ -1,4 +1,4 @@
-package forecaster.algorithms;
+package forecaster.algorithm;
 
 import forecaster.domain.Rate;
 

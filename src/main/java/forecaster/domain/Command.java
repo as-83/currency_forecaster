@@ -8,7 +8,7 @@ public class Command {
 
     private boolean correct;
     private int forecastPeriod;
-    private Currency currencyCode;
+    private CurrencyCode currencyCode;
 
     public int getForecastPeriod() {
         return forecastPeriod;
@@ -18,11 +18,11 @@ public class Command {
         this.forecastPeriod = forecastPeriod;
     }
 
-    public Currency getCurrencyCode() {
+    public CurrencyCode getCurrencyCode() {
         return currencyCode;
     }
 
-    public void setCurrencyCode(Currency currencyCode) {
+    public void setCurrencyCode(CurrencyCode currencyCode) {
         this.currencyCode = currencyCode;
     }
 

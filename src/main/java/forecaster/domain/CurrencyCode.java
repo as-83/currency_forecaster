@@ -3,7 +3,7 @@ package forecaster.domain;
 /**
  * Коды валют
  */
-public enum Currency {
+public enum CurrencyCode {
 
     /**
      * Код доллара США

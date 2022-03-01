@@ -9,6 +9,7 @@ import java.time.format.DateTimeFormatter;
  * валюты в определенную дату
  */
 public class Rate {
+    public static final String DATE_PATTERN = "E dd.MM.yyyy";
     private LocalDate date;
     private BigDecimal value;
 
@@ -27,9 +28,9 @@ public class Rate {
 
     @Override
     public String toString() {
-        String datePattern = "E dd.MM.yyyy";
-        DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern(datePattern);
-        return  dateFormatter.format(date) +
+
+        DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern(DATE_PATTERN);
+        return dateFormatter.format(date) +
                 " " + value;
     }
 }
