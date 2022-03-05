@@ -1,13 +1,9 @@
 package edu.abdsul.forecaster;
 
-import edu.abdsul.forecaster.algorithm.ForecastAlgorithm;
+import edu.abdsul.forecaster.algorithm.ForecastType;
 import edu.abdsul.forecaster.algorithm.LastSevenAvgForecast;
 import edu.abdsul.forecaster.domain.CurrencyCode;
 import edu.abdsul.forecaster.domain.Rate;
-import edu.abdsul.forecaster.source.DataSource;
-import edu.abdsul.forecaster.source.FileDataSource;
-
-import java.util.List;
 
 /**
  * Класс Forecaster выполняет прогноз курса валюты
@@ -17,9 +13,7 @@ import java.util.List;
  * Источник данных по умолчанию - csv-файл
  */
 public class Forecaster {
-
-    private DataSource dataSource = new FileDataSource();
-    private ForecastAlgorithm forecastType = new LastSevenAvgForecast();
+    private ForecastType forecastType = new LastSevenAvgForecast();
 
     /**
      * Прогноз курса выбранной валюты, на заданный период
@@ -29,17 +23,15 @@ public class Forecaster {
      * @param forecastDuration срок прогноза в днях начиная с завтрашнего дня
      * @return Прогноз курса валюты на заданное количество дней
      */
-    public List<Rate> getForecast(CurrencyCode currencyCode, int forecastDuration) {
-        List<Rate> ratesFromSrc = dataSource.getRates(currencyCode);
-        return forecastType.getForecast(ratesFromSrc, forecastDuration);
+    public Rate getForecast(CurrencyCode currencyCode, int forecastDuration) {
+        return forecastType.getForecast(currencyCode, forecastDuration);
     }
 
-    public void setDataSource(DataSource dataSource) {
-        this.dataSource = dataSource;
+    public ForecastType getForecastType() {
+        return forecastType;
     }
 
-    public void setForecastType(ForecastAlgorithm forecast) {
-        this.forecastType = forecast;
+    public void setForecastType(ForecastType forecastType) {
+        this.forecastType = forecastType;
     }
-
 }

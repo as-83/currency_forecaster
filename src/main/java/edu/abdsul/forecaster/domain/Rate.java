@@ -3,34 +3,50 @@ package edu.abdsul.forecaster.domain;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.Objects;
 
 /**
  * Класс Rate представляет курс
  * валюты в определенную дату
  */
 public class Rate {
-    public static final String DATE_PATTERN = "E dd.MM.yyyy";
-    private LocalDate date;
-    private BigDecimal value;
+    private CurrencyCode currencyCode;
+    private int nominal;
+    private LinkedHashMap<LocalDate, BigDecimal> rates;
 
-    public Rate(LocalDate date, BigDecimal value) {
-        this.date = date;
-        this.value = value;
+    public Rate(CurrencyCode currencyCode) {
+        this.currencyCode = currencyCode;
+        rates = new LinkedHashMap<>();
     }
 
-    public LocalDate getDate() {
-        return date;
+    public CurrencyCode getCurrencyCode() {
+        return currencyCode;
     }
 
-    public BigDecimal getValue() {
-        return value;
+    public void setCurrencyCode(CurrencyCode currencyCode) {
+        this.currencyCode = currencyCode;
     }
 
-    @Override
-    public String toString() {
-
-        DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern(DATE_PATTERN);
-        return dateFormatter.format(date) +
-                " " + value;
+    public int getNominal() {
+        return nominal;
     }
+
+    public void setNominal(int nominal) {
+        this.nominal = nominal;
+    }
+
+    public LinkedHashMap<LocalDate, BigDecimal> getRates() {
+        return rates;
+    }
+
+    public void setRates(LinkedHashMap<LocalDate, BigDecimal> rates) {
+        this.rates = rates;
+    }
+
+    public void addRate(LocalDate date, BigDecimal value) {
+       rates.put(date, value);
+    }
+
 }

@@ -1,6 +1,8 @@
 package edu.abdsul.forecaster.algorithm;
 
+import edu.abdsul.forecaster.domain.CurrencyCode;
 import edu.abdsul.forecaster.domain.Rate;
+import edu.abdsul.forecaster.source.DataSource;
 
 import java.util.List;
 
@@ -8,13 +10,15 @@ import java.util.List;
  * Получение прогноза курса валюты на заданное
  * количество дней
  */
-public interface ForecastAlgorithm {
+public interface ForecastType {
     /**
      * Прогноз курса валюты основыванный на исторических данных
      *
-     * @param rates            список исторических данных курса валюты
+     * @param currencyCode          код валюты
      * @param forecastDuration длительность прогноза в днях
      * @return список прогнозируемых значений курса валюты на заданное количество дней
      */
-    List<Rate> getForecast(List<Rate> rates, int forecastDuration);
+    Rate getForecast(CurrencyCode currencyCode, int forecastDuration);
+
+    void setDataSource(DataSource dataSource);
 }

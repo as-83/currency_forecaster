@@ -13,7 +13,12 @@ public enum ForecastPeriod {
     /**
      * Неделя или семь дней
      */
-    WEEK(7);
+    WEEK(7),
+
+    /**
+     * Месяц
+     */
+    MONTH(30);
     private final int daysCount;
 
     ForecastPeriod(int days) {

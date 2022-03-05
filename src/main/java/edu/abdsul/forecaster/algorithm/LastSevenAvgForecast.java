@@ -1,14 +1,16 @@
 package edu.abdsul.forecaster.algorithm;
 
+import edu.abdsul.forecaster.domain.CurrencyCode;
 import edu.abdsul.forecaster.domain.Rate;
+import edu.abdsul.forecaster.source.DataSource;
+import edu.abdsul.forecaster.source.FileDataSource;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.time.Period;
 import java.util.ArrayDeque;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -18,50 +20,59 @@ import java.util.stream.Collectors;
  * Алгоритм вычисления: Среднее арифметическое
  * значение на основании 7 последних значений
  */
-public class LastSevenAvgForecast implements ForecastAlgorithm {
+public class LastSevenAvgForecast implements ForecastType {
     private static final long DAYS_LIMIT = 7;
+
+    private DataSource dataSource = new FileDataSource();
+
 
     /**
      * Вычисление прогнозируемого курса валюты на заданный в днях срок
      * <p>
      * Алгоритм вычисления: Среднее арифметическо 7 последних значений
      *
-     * @param rates            список исторических данных курса валюты
+     * @param currencyCode            код валюты
      * @param forecastDuration длительность прогноза в днях
      * @return список прогнозируемых значений курса валюты на заданное количество дней
      */
     @Override
-    public List<Rate> getForecast(List<Rate> rates, int forecastDuration) {
+    public Rate getForecast(CurrencyCode currencyCode, int forecastDuration) {
 
-        List<Rate> forecasts = new ArrayList<>();
+        Rate forecasts = new Rate(currencyCode);
 
-        if (rates.size() <= 0) {
-            return Collections.emptyList();
+        Rate rateHistory = dataSource.getAllRates(currencyCode);
+
+        if (rateHistory.getRates().isEmpty()) {
+            return rateHistory;
         }
 
-        LocalDate lastDateInHistory = rates.get(0).getDate();
+        LocalDate lastDateInHistory = (LocalDate) rateHistory.getRates().keySet().toArray()[0];
         int absentDaysCount = Period.between(lastDateInHistory, LocalDate.now()).getDays();
 
         forecastDuration += absentDaysCount;
-        ArrayDeque<Rate> lastSevenRates = rates.stream()
+        ArrayDeque<BigDecimal> lastSevenRates =  rateHistory.getRates().entrySet().stream()
                 .limit(DAYS_LIMIT)
+                .map(Map.Entry::getValue)
                 .collect(Collectors.toCollection(ArrayDeque::new));
 
         for (int i = 1; i <= forecastDuration; i++) {
             BigDecimal avgValue = lastSevenRates.stream()
-                    .map(Rate::getValue)
-                    .reduce(BigDecimal.ZERO, BigDecimal::add).divide(BigDecimal.valueOf(DAYS_LIMIT), 2);
+                    .reduce(BigDecimal.ZERO, BigDecimal::add).divide(BigDecimal.valueOf(DAYS_LIMIT), RoundingMode.CEILING);
 
             LocalDate nextDate = lastDateInHistory.plusDays(i);
-            Rate forecastRate = new Rate(nextDate, avgValue);
+
 
             lastSevenRates.removeLast();
-            lastSevenRates.addFirst(forecastRate);
+            lastSevenRates.addFirst(avgValue);
 
             if (i > absentDaysCount) {
-                forecasts.add(forecastRate);
+                forecasts.addRate(nextDate, avgValue);
             }
         }
         return forecasts;
+    }
+
+    public void setDataSource(DataSource dataSource) {
+        this.dataSource = dataSource;
     }
 }

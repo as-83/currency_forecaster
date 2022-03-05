@@ -5,8 +5,10 @@ import edu.abdsul.forecaster.domain.CurrencyCode;
 import edu.abdsul.forecaster.domain.Rate;
 
 import java.text.DecimalFormat;
+import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Map;
 import java.util.Scanner;
 
 /**
@@ -52,7 +54,7 @@ public class ForecasterClient {
 
             CurrencyCode currencyCode = command.getCurrencyCode();
             int forecastPeriod = command.getForecastPeriod();
-            List<Rate> rates = forecaster.getForecast(currencyCode, forecastPeriod);
+            Rate rates = forecaster.getForecast(currencyCode, forecastPeriod);
 
             printForecast(rates);
 
@@ -60,27 +62,26 @@ public class ForecasterClient {
 
     }
 
-
     /**
      * Форматированный вывод прогноза курса валюты в консоль
      * Пример: Вт 22.02.2022 - 75,45
      *
      * @param rates Прогноз курса валюты
      */
-    private static void printForecast(List<Rate> rates) {
-        if (rates.isEmpty()) {
+    private static void printForecast(Rate rates) {
+        if (rates.getRates().isEmpty()) {
             System.out.println(EMPTY_RESULT_MESSAGE);
             return;
         }
         DecimalFormat valueFormatter = new DecimalFormat("###.##");
         DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern(DATE_PATTERN);
 
-        for (Rate rate : rates) {
-            String date = dateFormatter.format(rate.getDate());
+        rates.getRates().forEach((key, value1) -> {
+            String date = dateFormatter.format(key);
             date = date.substring(0, 1).toUpperCase() + date.substring(1);
-            String value = valueFormatter.format(rate.getValue());
+            String value = valueFormatter.format(value1);
             System.out.println(date + " - " + value);
-        }
+        });
     }
 
 }
