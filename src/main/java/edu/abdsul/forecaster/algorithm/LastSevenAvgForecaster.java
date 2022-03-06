@@ -1,5 +1,6 @@
 package edu.abdsul.forecaster.algorithm;
 
+import edu.abdsul.forecaster.domain.Command;
 import edu.abdsul.forecaster.domain.CurrencyCode;
 import edu.abdsul.forecaster.domain.Rate;
 import edu.abdsul.forecaster.source.DataSource;
@@ -14,33 +15,30 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
- * Класс LastSevenAvgForecast осуществляет вычисление прогнозируемого курса валюты,
+ * Класс LastSevenAvgForecaster осуществляет вычисление прогнозируемого курса валюты,
  * основываясь на исторических данных
  * <p>
  * Алгоритм вычисления: Среднее арифметическое
  * значение на основании 7 последних значений
  */
-public class LastSevenAvgForecast implements ForecastType {
+public class LastSevenAvgForecaster implements Forecaster {
     private static final long DAYS_LIMIT = 7;
-
     private DataSource dataSource = new FileDataSource();
-
 
     /**
      * Вычисление прогнозируемого курса валюты на заданный в днях срок
      * <p>
      * Алгоритм вычисления: Среднее арифметическо 7 последних значений
      *
-     * @param currencyCode            код валюты
-     * @param forecastDuration длительность прогноза в днях
+     * @param command объект содержащий команды: длительность прогноза в днях, код валюты
      * @return список прогнозируемых значений курса валюты на заданное количество дней
      */
     @Override
-    public Rate getForecast(CurrencyCode currencyCode, int forecastDuration) {
+    public Rate getForecast(Command command) {
 
-        Rate forecasts = new Rate(currencyCode);
+        Rate forecasts = new Rate(command.getCurrencyCode());
 
-        Rate rateHistory = dataSource.getAllRates(currencyCode);
+        Rate rateHistory = dataSource.getAllRates(command.getCurrencyCode());
 
         if (rateHistory.getRates().isEmpty()) {
             return rateHistory;
@@ -49,7 +47,7 @@ public class LastSevenAvgForecast implements ForecastType {
         LocalDate lastDateInHistory = (LocalDate) rateHistory.getRates().keySet().toArray()[0];
         int absentDaysCount = Period.between(lastDateInHistory, LocalDate.now()).getDays();
 
-        forecastDuration += absentDaysCount;
+        int forecastDuration = absentDaysCount + command.getForecastPeriod();
         ArrayDeque<BigDecimal> lastSevenRates =  rateHistory.getRates().entrySet().stream()
                 .limit(DAYS_LIMIT)
                 .map(Map.Entry::getValue)
@@ -60,7 +58,6 @@ public class LastSevenAvgForecast implements ForecastType {
                     .reduce(BigDecimal.ZERO, BigDecimal::add).divide(BigDecimal.valueOf(DAYS_LIMIT), RoundingMode.CEILING);
 
             LocalDate nextDate = lastDateInHistory.plusDays(i);
-
 
             lastSevenRates.removeLast();
             lastSevenRates.addFirst(avgValue);

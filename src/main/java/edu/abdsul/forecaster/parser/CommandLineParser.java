@@ -1,4 +1,4 @@
-package edu.abdsul.forecaster;
+package edu.abdsul.forecaster.parser;
 
 import edu.abdsul.forecaster.domain.Command;
 import edu.abdsul.forecaster.domain.CurrencyCode;
@@ -11,7 +11,7 @@ import java.util.Arrays;
  * парсинг команд из строки:
  * код валюты и срок прогноза в днях
  */
-public class CommandLineParser {
+public class CommandLineParser implements Parser{
 
     private static final int ACTION_COMMAND_INDEX = 0;
     private static final int CURRENCY_CODE_INDEX = 1;
@@ -24,7 +24,8 @@ public class CommandLineParser {
      * @param commandLine     строка с командами
      * @return класс Command с полями: код валюты и срок прогноза в днях
      */
-    public static Command parse(String commandLine) {
+    @Override
+    public Command parse(String commandLine) {
 
         Command command = new Command();
 
@@ -48,7 +49,7 @@ public class CommandLineParser {
      * @param commandLineParts     массив комманд
      * @return true если все комманды корректные, иначе false
      */
-    private static boolean isValid(String[] commandLineParts) {
+    private boolean isValid(String[] commandLineParts) {
         if (commandLineParts.length != 3) {
             return false;
         }
