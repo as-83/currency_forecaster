@@ -4,12 +4,12 @@ public enum Options {
     /**
      * Период
      */
-    DATE,
+    PERIOD,
 
     /**
      * Алгоритм вычисления
      */
-    ALGORITHM,
+    ALG,
 
     /**
      * Вывод

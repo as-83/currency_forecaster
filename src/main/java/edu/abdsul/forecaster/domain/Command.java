@@ -1,5 +1,7 @@
 package edu.abdsul.forecaster.domain;
 
+import java.time.LocalDate;
+
 /**
  * Класс Command представляет код валюты,
  * период прогноза  и корректость команды
@@ -8,6 +10,8 @@ public class Command {
 
     private boolean correct;
     private int forecastPeriod;
+
+    private LocalDate forecastStartDate;//TODO forecastStartDate
     private CurrencyCode currencyCode;
     private Algorithm algorithm;
     private Output output;
@@ -50,5 +54,13 @@ public class Command {
 
     public void setOutput(Output output) {
         this.output = output;
+    }
+
+    public LocalDate getForecastStartDate() {
+        return forecastStartDate;
+    }
+
+    public void setForecastStartDate(LocalDate forecastStartDate) {
+        this.forecastStartDate = forecastStartDate;
     }
 }
