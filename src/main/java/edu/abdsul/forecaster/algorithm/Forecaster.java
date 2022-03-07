@@ -1,7 +1,6 @@
 package edu.abdsul.forecaster.algorithm;
 
 import edu.abdsul.forecaster.domain.Command;
-import edu.abdsul.forecaster.domain.CurrencyCode;
 import edu.abdsul.forecaster.domain.Rate;
 import edu.abdsul.forecaster.source.DataSource;
 

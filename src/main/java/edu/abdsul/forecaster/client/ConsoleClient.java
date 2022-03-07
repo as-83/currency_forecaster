@@ -1,31 +1,25 @@
-package edu.abdsul.forecaster;
+package edu.abdsul.forecaster.client;
 
-import edu.abdsul.forecaster.domain.Command;
-import edu.abdsul.forecaster.domain.CurrencyCode;
-import edu.abdsul.forecaster.domain.Rate;
-import edu.abdsul.forecaster.parser.CommandLineParser;
-import edu.abdsul.forecaster.parser.Parser;
+import edu.abdsul.forecaster.Controller;
 
-import java.text.DecimalFormat;
-import java.time.format.DateTimeFormatter;
 import java.util.Scanner;
 
 /**
- * Класс ForecasterClient осуществляет взаимодействие с пользователем:
+ * Класс ConsoleClient осуществляет взаимодействие с пользователем:
  * получает от пользователя комманду выполнить прогноз курса
  * выбранной из списка валюты  и выводит результат работы в
  * консоль в отформатированном виде
  */
-public class ForecasterClient {
+public class ConsoleClient {
 
     private static final Scanner scanner = new Scanner(System.in);
     private static final String EXIT_MESSAGE = "Работа программы завершена";
     private static final String EXIT_COMMAND = "exit";
     private static final String MENU_TEXT = "\nВведите команду. Примеры:\n" +
-                        "Получить прогноз курса валюты на завтра - " + "rate TRY tomorrow\n" +
-                        "Получить прогноз курса валюты на 7 дней - " + "rate USD week\n" +
-                        "USD - доллар США,  TRY - турецкая лира, EUR -  Евро\n" +
-                        "Выйти из программы - exit";
+            "Получить прогноз курса валюты на завтра - " + "rate TRY tomorrow\n" +
+            "Получить прогноз курса валюты на 7 дней - " + "rate USD week\n" +
+            "USD - доллар США,  TRY - турецкая лира, EUR -  Евро\n" +
+            "Выйти из программы - exit";
 
     public static void main(String[] args) {
 

@@ -1,7 +1,6 @@
 package edu.abdsul.forecaster.algorithm;
 
 import edu.abdsul.forecaster.domain.Command;
-import edu.abdsul.forecaster.domain.CurrencyCode;
 import edu.abdsul.forecaster.domain.Rate;
 import edu.abdsul.forecaster.source.DataSource;
 import edu.abdsul.forecaster.source.FileDataSource;
@@ -48,7 +47,7 @@ public class LastSevenAvgForecaster implements Forecaster {
         int absentDaysCount = Period.between(lastDateInHistory, LocalDate.now()).getDays();
 
         int forecastDuration = absentDaysCount + command.getForecastPeriod();
-        ArrayDeque<BigDecimal> lastSevenRates =  rateHistory.getRates().entrySet().stream()
+        ArrayDeque<BigDecimal> lastSevenRates = rateHistory.getRates().entrySet().stream()
                 .limit(DAYS_LIMIT)
                 .map(Map.Entry::getValue)
                 .collect(Collectors.toCollection(ArrayDeque::new));

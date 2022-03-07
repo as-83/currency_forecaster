@@ -3,11 +3,15 @@ package edu.abdsul.forecaster;
 import edu.abdsul.forecaster.algorithm.Forecaster;
 import edu.abdsul.forecaster.algorithm.LastSevenAvgForecaster;
 import edu.abdsul.forecaster.domain.Command;
+import edu.abdsul.forecaster.domain.Output;
 import edu.abdsul.forecaster.domain.Rate;
 import edu.abdsul.forecaster.formater.ConsoleResultFormatter;
 import edu.abdsul.forecaster.formater.ResultFormatter;
 import edu.abdsul.forecaster.parser.CommandLineParser;
 import edu.abdsul.forecaster.parser.Parser;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Класс Forecaster выполняет прогноз курса валюты
@@ -30,16 +34,25 @@ public class Controller {
      * Прогноз курса выбранной валюты, на заданный период
      * основыванный на исторических данных курса валюты
      *
-     * @param commandLine     строка содержащая команды
+     * @param commandLine строка содержащая команды
      * @return Прогноз курса валюты на заданное количество дней
      */
     public String getForecast(String commandLine) {
-        Command command = parser.parse(commandLine);
-        if (!command.isCorrect()) {
+        List<Command> commands = parser.parse(commandLine);
+        if (commands.isEmpty()) {
             return INCORRECT_COMMAND_MESSAGE;
         }
-        Rate forecast = forecaster.getForecast(command);
-        return resultFormatter.format(forecast);
+        List<Rate> forecasts = new ArrayList<>();
+        for (Command command : commands) {
+            Rate forecast = forecaster.getForecast(command);
+            forecasts.add(forecast);
+        }
+
+        if (commands.stream().anyMatch(c -> c.getOutput() == Output.GRAPH)) {
+            return new GraphMaker().getGraphPath();
+        }
+
+        return resultFormatter.format(forecasts);
     }
 
     public Forecaster getForecastType() {

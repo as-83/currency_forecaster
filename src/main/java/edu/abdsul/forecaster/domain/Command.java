@@ -9,6 +9,8 @@ public class Command {
     private boolean correct;
     private int forecastPeriod;
     private CurrencyCode currencyCode;
+    private Algorithm algorithm;
+    private Output output;
 
     public int getForecastPeriod() {
         return forecastPeriod;
@@ -34,4 +36,19 @@ public class Command {
         this.correct = correct;
     }
 
+    public Algorithm getAlgorithm() {
+        return algorithm;
+    }
+
+    public void setAlgorithm(Algorithm algorithm) {
+        this.algorithm = algorithm;
+    }
+
+    public Output getOutput() {
+        return output;
+    }
+
+    public void setOutput(Output output) {
+        this.output = output;
+    }
 }

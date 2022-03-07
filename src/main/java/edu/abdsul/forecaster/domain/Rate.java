@@ -2,10 +2,7 @@ package edu.abdsul.forecaster.domain;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.Objects;
 
 /**
  * Класс Rate представляет курс
@@ -46,7 +43,7 @@ public class Rate {
     }
 
     public void addRate(LocalDate date, BigDecimal value) {
-       rates.put(date, value);
+        rates.put(date, value);
     }
 
 }
