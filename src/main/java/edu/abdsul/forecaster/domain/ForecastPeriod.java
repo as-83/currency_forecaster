@@ -1,7 +1,7 @@
 package edu.abdsul.forecaster.domain;
 
 /**
- * Временные периоды
+ * Сроки прогноза
  */
 public enum ForecastPeriod {
 
@@ -18,7 +18,12 @@ public enum ForecastPeriod {
     /**
      * Месяц
      */
-    MONTH(30);
+    MONTH(30),
+
+    /**
+     * Конкретная дата
+     */
+    DATE(1);
     private final int daysCount;
 
     ForecastPeriod(int days) {

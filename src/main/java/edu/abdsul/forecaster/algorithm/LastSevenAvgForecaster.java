@@ -46,7 +46,7 @@ public class LastSevenAvgForecaster implements Forecaster {
         LocalDate lastDateInHistory = (LocalDate) rateHistory.getRates().keySet().toArray()[0];
         int absentDaysCount = Period.between(lastDateInHistory, LocalDate.now()).getDays();
 
-        int forecastDuration = absentDaysCount + command.getForecastPeriod();
+        int forecastDuration = absentDaysCount + command.getForecastPeriod().getDayCount();
         ArrayDeque<BigDecimal> lastSevenRates = rateHistory.getRates().entrySet().stream()
                 .limit(DAYS_LIMIT)
                 .map(Map.Entry::getValue)

@@ -1,5 +1,7 @@
 package edu.abdsul.forecaster.domain;
-
+/**
+ * Опции
+ */
 public enum Options {
     /**
      * Период

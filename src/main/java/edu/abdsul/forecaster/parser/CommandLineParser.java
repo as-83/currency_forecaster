@@ -2,6 +2,8 @@ package edu.abdsul.forecaster.parser;
 
 import edu.abdsul.forecaster.domain.*;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -14,13 +16,11 @@ import java.util.List;
 public class CommandLineParser implements Parser {
 
     private static final int ALGORITHM_INDEX = 5;
-    private Command command;
     private static final int ACTION_COMMAND_INDEX = 0;
     private static final int CURRENCY_CODE_INDEX = 1;
     private static final int FORECAST_PERIOD_INDEX = 3;
     private static final String ACTION_COMMAND = "rate";
-
-    public static final String DATE_PATTERN = "^\\d{2}.\\d{2}.\\d{4}$";
+    private static final String DATE_PATTERN = "^\\d{2}.\\d{2}.\\d{4}$";
 
     /**
      * Парсинг команд из строки
@@ -35,28 +35,34 @@ public class CommandLineParser implements Parser {
 
         if (isValid(commandLineParts)) {
             String[] currencyCodes = commandLineParts[CURRENCY_CODE_INDEX].split(",");
-            String fPeriod = "";
-            String algorithm = "";
-            String output = "list";
+            ForecastPeriod fPeriod = ForecastPeriod.TOMORROW;
+            Algorithm algorithm = Algorithm.ACTUAL;
+            Output output = Output.LIST;
 
             for (int i = 2; i < commandLineParts.length; i++) {
-                switch (commandLineParts[i]) {
-                    case "-PERIOD":
-                        fPeriod = commandLineParts[++i]; break;
-                    case "-ALG" :
-                        algorithm = commandLineParts[++i]; break;
-                    case "-OUTPUT" :
-                        output = commandLineParts[++i]; break;
+                Options option = Options.valueOf(commandLineParts[i].substring(1));
+                switch (option) {
+                    case PERIOD:
+                        fPeriod = initForecastPeriod(commandLineParts[++i]);
+                        break;
+                    case ALG:
+                        algorithm = Algorithm.valueOf(commandLineParts[++i]);
+                        break;
+                    case OUTPUT:
+                        output = Output.valueOf(commandLineParts[++i]);
+                        break;
                 }
             }
             for (String currencyCode : currencyCodes) {
                 Command command = new Command();
                 command.setCurrencyCode(CurrencyCode.valueOf(currencyCode));
-                if (!fPeriod.isEmpty()) {
-                    command.setForecastPeriod(ForecastPeriod.valueOf(fPeriod).getDayCount());//TODO only enum
+                command.setForecastPeriod(fPeriod);
+                if (fPeriod == ForecastPeriod.DATE) {
+                    LocalDate parseDate = LocalDate.parse(commandLineParts[FORECAST_PERIOD_INDEX], DateTimeFormatter.ofPattern("dd.MM.yyyy"));
+                    command.setForecastStartDate(parseDate);
                 }
-                command.setOutput(Output.valueOf(output.toUpperCase()));
-                command.setAlgorithm(Algorithm.valueOf(algorithm));
+                command.setOutput(output);
+                command.setAlgorithm(algorithm);
                 command.setCorrect(true);
                 commands.add(command);
             }
@@ -65,11 +71,12 @@ public class CommandLineParser implements Parser {
         return commands;
     }
 
-    boolean checkKeysValidity(String[] commandLineParts) {
-        return Arrays.stream(commandLineParts)
-                .filter(s -> s.startsWith("-"))
-                .map(s -> s.substring(1))
-                .allMatch(s -> Arrays.stream(Options.values()).anyMatch(v -> v.name().equals(s.toUpperCase())));
+    private ForecastPeriod initForecastPeriod(String commandLinePart) {
+        if (commandLinePart.matches(DATE_PATTERN)) {
+            return ForecastPeriod.DATE;
+        }
+
+        return ForecastPeriod.valueOf(commandLinePart);
     }
 
     /**
@@ -98,6 +105,13 @@ public class CommandLineParser implements Parser {
                 .anyMatch(p -> p.equalsIgnoreCase(commandLineParts[ALGORITHM_INDEX]));
 
         return isActionArgValid && isPeriodValid && isCurrencyCodeValid && isKeysValid && isAlgoArgValid;
+    }
+
+    boolean checkKeysValidity(String[] commandLineParts) {
+        return Arrays.stream(commandLineParts)
+                .filter(s -> s.startsWith("-"))
+                .map(s -> s.substring(1))
+                .allMatch(s -> Arrays.stream(Options.values()).anyMatch(v -> v.name().equals(s.toUpperCase())));
     }
 
     public boolean isCurrencyCodesValid(String commandLinePart) {
