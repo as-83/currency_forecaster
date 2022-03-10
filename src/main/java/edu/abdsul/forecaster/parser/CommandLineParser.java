@@ -10,8 +10,8 @@ import java.util.List;
 
 /**
  * Класс CommandLineParser выполняет
- * парсинг команд из строки:
- * код валюты и срок прогноза в днях
+ * парсинг команд из строки, содержащей
+ * код валюты, срок прогноза и вариант вывода прогноза
  */
 public class CommandLineParser implements Parser {
 
@@ -58,8 +58,10 @@ public class CommandLineParser implements Parser {
                 command.setCurrencyCode(CurrencyCode.valueOf(currencyCode));
                 command.setForecastPeriod(fPeriod);
                 if (fPeriod == ForecastPeriod.DATE) {
-                    LocalDate parseDate = LocalDate.parse(commandLineParts[FORECAST_PERIOD_INDEX], DateTimeFormatter.ofPattern("dd.MM.yyyy"));
+                    LocalDate parseDate = LocalDate.parse(commandLineParts[FORECAST_PERIOD_INDEX], DateTimeFormatter.ofPattern("dd.MM.yyyy"));//TODO exception handling
                     command.setForecastStartDate(parseDate);
+                } else {
+                    command.setForecastStartDate(LocalDate.now().plusDays(1));
                 }
                 command.setOutput(output);
                 command.setAlgorithm(algorithm);

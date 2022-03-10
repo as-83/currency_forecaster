@@ -58,7 +58,7 @@ public class FileDataSource implements DataSource {
     }*/
 
     @Override
-    public Rate getAllRates(CurrencyCode currencyCode) {
+    public Rate getLastNRates(CurrencyCode currencyCode, int count) {
         Rate rateHistory = new Rate(currencyCode);
         Path path = Paths.get(DATASOURCE_PATH + "/" + currencyCode.name() + FILE_NAME_SUFFIX);
 
@@ -66,8 +66,8 @@ public class FileDataSource implements DataSource {
         try {
             scanner = new Scanner(path);
             scanner.nextLine();
-
-            while (scanner.hasNext()) {
+            int rowCount = 0;
+            while (scanner.hasNext() && rowCount++ < count) {
                 String[] rowSells = scanner.nextLine().replaceAll("\"", "").split(CELL_SEPARATOR);
 
                 if (rateHistory.getNominal() == 0) {
@@ -85,6 +85,13 @@ public class FileDataSource implements DataSource {
 
         return rateHistory;
     }
+
+    @Override
+    public Rate getAllRates(CurrencyCode currencyCode) {
+        return getLastNRates(currencyCode, Integer.MAX_VALUE);
+    }
+
+
 
 
 }

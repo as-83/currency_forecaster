@@ -20,4 +20,6 @@ public interface DataSource {
 
     Rate getAllRates(CurrencyCode currencyCode);
 
+
+    Rate getLastNRates(CurrencyCode currencyCode, int count);
 }

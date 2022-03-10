@@ -17,5 +17,10 @@ public enum Algorithm {
     /**
      * Линейная регрессия
      */
-    LINEAR_REGRESSION
+    LINEAR_REGRESSION,
+
+    /**
+     * Линейная регрессия
+     */
+    LAST_WEEK_AVG
 }
