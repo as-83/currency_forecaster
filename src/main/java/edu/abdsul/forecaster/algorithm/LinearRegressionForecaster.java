@@ -4,9 +4,13 @@ import edu.abdsul.forecaster.domain.Command;
 import edu.abdsul.forecaster.domain.Rate;
 import edu.abdsul.forecaster.source.DataSource;
 import edu.abdsul.forecaster.source.FileDataSource;
+import edu.abdsul.forecaster.utils.LinearRegression;
+import edu.abdsul.forecaster.utils.RateHistoryHelper;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
+import java.util.stream.DoubleStream;
 
 /**
  * Класс LastSevenAvgForecaster осуществляет вычисление прогнозируемого курса валюты,
@@ -33,17 +37,25 @@ public class LinearRegressionForecaster implements Forecaster {
         Rate forecasts = new Rate(command.getCurrencyCode());
 
         Rate rateHistory = dataSource.getLastNRates(command.getCurrencyCode(), 30);
-        boolean isForecastable = !command.getForecastStartDate().isAfter(LocalDate.now().plusYears(2));
-        if(!isForecastable) {//TODO error field in Rate and write error to it
-            return forecasts;
-        }
-
         if (rateHistory.getRates().isEmpty()) {
             return rateHistory;
         }
+        LocalDate lastRateDate = rateHistory.getRates().keySet().stream().findFirst().get();
+        int absentDays = (int)ChronoUnit.DAYS.between(lastRateDate, command.getForecastStartDate());
 
+        double[] lastMonthRates = RateHistoryHelper.format(rateHistory);
+        double[] xAxis = DoubleStream.iterate(1.0, x -> x + 1).limit(30).toArray();
 
+        LinearRegression linearRegression = new LinearRegression(xAxis, lastMonthRates);
 
+        forecasts.setNominal(rateHistory.getNominal());
+        forecasts.setCurrencyCode(rateHistory.getCurrencyCode());
+
+        for (int i = 0; i < command.getForecastPeriod().getDayCount(); i++) {
+            LocalDate date = command.getForecastStartDate().plusDays(i);
+            double value = linearRegression.predict(30 + i + 1 + absentDays);
+            forecasts.addRate(date, new BigDecimal(value));
+        }
         return forecasts;
     }
 

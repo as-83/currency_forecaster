@@ -4,6 +4,7 @@ import edu.abdsul.forecaster.domain.Command;
 import edu.abdsul.forecaster.domain.Rate;
 import edu.abdsul.forecaster.source.DataSource;
 import edu.abdsul.forecaster.source.FileDataSource;
+import edu.abdsul.forecaster.utils.RateHistoryHelper;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -46,23 +47,14 @@ public class ActualAlgorithmForecaster implements Forecaster {
         }
 
 
-        BigDecimal twoYearsAgo = getRateFromPast(rateHistory, command.getForecastStartDate().minusYears(2));
-        BigDecimal threeYearsAgo = getRateFromPast(rateHistory, command.getForecastStartDate().minusYears(3));
+        BigDecimal twoYearsAgo = RateHistoryHelper.getRateFromPast(rateHistory, command.getForecastStartDate().minusYears(2));
+        BigDecimal threeYearsAgo = RateHistoryHelper.getRateFromPast(rateHistory, command.getForecastStartDate().minusYears(3));
         BigDecimal expectedRate = twoYearsAgo.add(threeYearsAgo);
         forecasts.addRate(command.getForecastStartDate(), expectedRate);
         forecasts.setNominal(rateHistory.getNominal());
         return forecasts;
     }
 
-    private BigDecimal getRateFromPast(Rate rateHistory, LocalDate pastDate) {
-        LocalDate nearestDate = pastDate;
-        BigDecimal rateInPast = rateHistory.getRates().get(pastDate);
-        while (rateInPast == null) {
-            nearestDate = nearestDate.minusDays(1);
-            rateInPast = rateHistory.getRates().get(nearestDate);
-        }
-        return rateInPast;
-    }
 
     public void setDataSource(DataSource dataSource) {
         this.dataSource = dataSource;
