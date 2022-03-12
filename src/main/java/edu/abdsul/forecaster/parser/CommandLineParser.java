@@ -21,6 +21,7 @@ public class CommandLineParser implements Parser {
     private static final int FORECAST_PERIOD_INDEX = 3;
     private static final String ACTION_COMMAND = "rate";
     private static final String DATE_PATTERN = "^\\d{2}.\\d{2}.\\d{4}$";
+    private static final int OUTPUT_INDEX = 7;
 
     /**
      * Парсинг команд из строки
@@ -105,8 +106,10 @@ public class CommandLineParser implements Parser {
         boolean isAlgoArgValid = Arrays.stream(Algorithm.values())
                 .map(Enum::name)
                 .anyMatch(p -> p.equalsIgnoreCase(commandLineParts[ALGORITHM_INDEX]));
+        boolean isOutputValid = Arrays.stream(Output.values())
+                .anyMatch(o ->commandLineParts[OUTPUT_INDEX].equalsIgnoreCase(o.name()));
 
-        return isActionArgValid && isPeriodValid && isCurrencyCodeValid && isKeysValid && isAlgoArgValid;
+        return isActionArgValid && isPeriodValid && isCurrencyCodeValid && isKeysValid && isAlgoArgValid && isOutputValid;
     }
 
     boolean checkKeysValidity(String[] commandLineParts) {

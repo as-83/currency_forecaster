@@ -1,7 +1,6 @@
 package edu.abdsul.forecaster;
 
-import edu.abdsul.forecaster.algorithm.Forecaster;
-import edu.abdsul.forecaster.algorithm.LastSevenAvgForecaster;
+import edu.abdsul.forecaster.algorithm.*;
 import edu.abdsul.forecaster.domain.Algorithm;
 import edu.abdsul.forecaster.domain.Command;
 import edu.abdsul.forecaster.domain.Output;
@@ -21,7 +20,7 @@ import java.util.List;
  * Алгоритм по умолчанию: среднее значение последних семи дней
  * Источник данных по умолчанию - csv-файл
  */
-public class Controller {
+public class ForecasterController {
     private static final String INCORRECT_COMMAND_MESSAGE = "\nНеверный формат комманды! Попробуйте еще раз!\n";
     private Forecaster forecaster;
     private Parser parser;
@@ -66,6 +65,13 @@ public class Controller {
     }
 
     private Forecaster getNeededForecaster(Algorithm algorithm) {
-        return new LastSevenAvgForecaster();
+        Forecaster forecaster;
+        switch (algorithm) {
+            case ACTUAL: forecaster = new ActualAlgorithmForecaster(); break;
+            case MYSTIC: forecaster = new MysticAlgorithmForecaster(); break;
+            case LINEAR_REGRESSION: forecaster = new LinearRegressionForecaster(); break;
+            default: forecaster = new LastSevenAvgForecaster();
+        }
+        return forecaster;
     }
 }

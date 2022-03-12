@@ -7,7 +7,6 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 public class ConsoleResultFormatter implements ResultFormatter {
-    private static final String INCORRECT_COMMAND_MESSAGE = "\nНеверный формат комманды! Попробуйте еще раз!\n";
     private static final String EMPTY_RESULT_MESSAGE = "Результат отсутствует!";
     private static final String DATE_PATTERN = "E dd.MM.yyyy";
 
