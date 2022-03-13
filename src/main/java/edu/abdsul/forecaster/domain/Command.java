@@ -3,8 +3,8 @@ package edu.abdsul.forecaster.domain;
 import java.time.LocalDate;
 
 /**
- * Класс Command представляет код валюты,
- * период прогноза  и корректость команды
+ * Класс Command представляет код валюты, период прогноза,
+ *  алгоритм прогнозирования, форму вывода результата  и корректость команды
  */
 public class Command {
 
@@ -14,8 +14,6 @@ public class Command {
     private CurrencyCode currencyCode;
     private Algorithm algorithm;
     private Output output;
-
-
 
     public ForecastPeriod getForecastPeriod() {
         return forecastPeriod;

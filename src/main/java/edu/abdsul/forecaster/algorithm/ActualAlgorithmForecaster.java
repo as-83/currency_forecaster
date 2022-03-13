@@ -10,11 +10,10 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 
 /**
- * Класс LastSevenAvgForecaster осуществляет вычисление прогнозируемого курса валюты,
+ * Класс ActualAlgorithmForecaster осуществляет вычисление прогнозируемого курса валюты,
  * основываясь на исторических данных
  * <p>
- * Алгоритм вычисления: Среднее арифметическое
- * значение на основании 7 последних значений
+ * Алгоритм вычисления: “Актуальный”
  */
 public class ActualAlgorithmForecaster implements Forecaster {
 
@@ -46,14 +45,16 @@ public class ActualAlgorithmForecaster implements Forecaster {
             return rateHistory;
         }
 
-
-        BigDecimal twoYearsAgo = RateHistoryHelper.getRateFromPast(rateHistory, command.getForecastStartDate().minusYears(2));
-        BigDecimal threeYearsAgo = RateHistoryHelper.getRateFromPast(rateHistory, command.getForecastStartDate().minusYears(3));
-        BigDecimal expectedRate = twoYearsAgo.add(threeYearsAgo);
-        forecasts.addRate(command.getForecastStartDate(), expectedRate);
         forecasts.setNominal(rateHistory.getNominal());
         forecasts.setStartDate(command.getForecastStartDate());
         forecasts.setFinishDate(command.getForecastStartDate().plusDays(command.getForecastPeriod().getDayCount() - 1));
+
+        for (int i = 0; i < command.getForecastPeriod().getDayCount(); i++) {
+            BigDecimal twoYearsAgo = RateHistoryHelper.getRateFromPast(rateHistory, command.getForecastStartDate().minusYears(2).plusDays(i));
+            BigDecimal threeYearsAgo = RateHistoryHelper.getRateFromPast(rateHistory, command.getForecastStartDate().minusYears(3).plusDays(i));
+            BigDecimal expectedRate = twoYearsAgo.add(threeYearsAgo);
+            forecasts.addRate(command.getForecastStartDate().plusDays(i), expectedRate);
+        }
         return forecasts;
     }
 

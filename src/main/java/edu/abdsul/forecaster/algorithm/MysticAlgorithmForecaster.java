@@ -41,7 +41,7 @@ public class MysticAlgorithmForecaster implements Forecaster {
         Rate forecast = new Rate(command.getCurrencyCode());
 
         Rate rateHistory = dataSource.getAllRates(command.getCurrencyCode());
-        boolean isForecastable = command.getForecastStartDate().isAfter(LocalDate.now().plusMonths(1));
+        boolean isForecastable = command.getForecastStartDate().isBefore(LocalDate.now().plusMonths(1));
         if (!isForecastable) {//TODO error field in Rate and write error to it
             return forecast;
         }
@@ -64,7 +64,7 @@ public class MysticAlgorithmForecaster implements Forecaster {
         }
 
         //Вычисляем среднее
-        BigDecimal avgRate = rateSum.divide(BigDecimal.valueOf(3));
+        BigDecimal avgRate = rateSum.divide(new BigDecimal(3), BigDecimal.ROUND_UP);
         forecast.addRate(command.getForecastStartDate(), avgRate);
 
         //Если прогноз больше чем на день, то Последующие даты рассчитываются
@@ -83,9 +83,9 @@ public class MysticAlgorithmForecaster implements Forecaster {
 
     private List<LocalDate> get3LastFoolMoons(LocalDate forecastStartDate) {
         List<LocalDate> moonDates = new ArrayList<>();
-
+        int i = 0;
         while (moonDates.size() < 3) {
-            LocalDate foolMoonDate = FoolMoonCalculator.getDate(forecastStartDate);
+            LocalDate foolMoonDate = FoolMoonCalculator.getDate(forecastStartDate.minusMonths(i++));
             if (foolMoonDate.isBefore(forecastStartDate)) {
                 moonDates.add(foolMoonDate);
             }

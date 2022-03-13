@@ -17,41 +17,13 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class CommandLineParserTest {
 
-    public static final String CORRECT_COMMAND_LINE = "rate USD,TRY -period 02.02.2022 -alg mystic -output graph";
-    public static  CommandLineParser commandLineParser;
+    public static final String CORRECT_COMMAND_LINE = "rate USD,TRY -date 02.02.2022 -alg mystic -output graph";
+    public static  ExtCommandLineParser commandLineParser;
     @BeforeAll
     public static void init() {
-        commandLineParser = new CommandLineParser();
-    }
-    @Test
-    void isCurrencyCodesValidTrueThenThreeValidCodes() {
-        boolean actual = commandLineParser.isCurrencyCodesValid("TRY,USD,EUR");
-        assertTrue(actual);
+        commandLineParser = new ExtCommandLineParser();
     }
 
-    @Test
-    void isCurrencyCodesValidFalseThenOneOfThreeNotValid() {
-        boolean actual = commandLineParser.isCurrencyCodesValid("TRY,USSR,EUR");
-        assertFalse(actual);
-    }
-
-    @Test
-    void isCurrencyCodesValidTrueThenOneValid() {
-        boolean actual = commandLineParser.isCurrencyCodesValid("TRY");
-        assertTrue(actual);
-    }
-
-    @Test
-    void checkKeysValidityWhenAllKeysValid() {
-        boolean isValid = commandLineParser.checkKeysValidity(new String[]{"-period", "month", "-alg", "-output"});
-        assertTrue(isValid);
-    }
-
-    @Test
-    void checkKeysValidityWhenOneKeyNotValid() {
-        boolean isValid = commandLineParser.checkKeysValidity(new String[]{"-date", "-a", "-output"});
-        assertFalse(isValid);
-    }
 
     @Test
     void parseWhenCommandLineIsValid() {

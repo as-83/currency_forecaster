@@ -12,6 +12,7 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+
 //rate USD,TRY -period week -alg LINEAR_REGRESSION -output list
 public class GraphResultFormatter implements ResultFormatter {
 
@@ -21,6 +22,13 @@ public class GraphResultFormatter implements ResultFormatter {
     public static final String EXT = ".png";
     public static final String IMG_TITLE_PREFIX = "Прогноз курса на период: ";
 
+    /**
+     * Отображает данные прогноза
+     * на графике на изображении png-формата
+     *
+     * @param rates Список обьектов содержащих данные прогнозов курса валют
+     * @return путь к файлу с изображением
+     */
     @Override
     public String format(List<Rate> rates) {
         if (rates.size() < 1) {

@@ -27,6 +27,14 @@ public class ExtCommandLineParser implements Parser {
     private String output;
     private boolean allPartsValid;
 
+    public ExtCommandLineParser() {
+        this.period = ForecastPeriod.DATE.name();
+        this.forecastStartDate = DATE_FORMATTER.format(LocalDate.now().plusDays(1));
+        this.algorithm = Algorithm.LINEAR_REGRESSION.name();
+        this.output = Output.LIST.name();
+        this.allPartsValid = true;
+    }
+
     /**
      * Парсинг команд из строки
      *
@@ -64,7 +72,7 @@ public class ExtCommandLineParser implements Parser {
 
         for (int i = 2; i < commandLineParts.size(); i++) {
             String option = commandLineParts.get(i);
-            if (!option.startsWith("-") || i + 1 < commandLineParts.size()) {
+            if (!option.startsWith("-") || i + 1 >= commandLineParts.size()) {
                 allPartsValid = false;
                 break;
             }
@@ -103,6 +111,8 @@ public class ExtCommandLineParser implements Parser {
             command.setForecastPeriod(ForecastPeriod.valueOf(period));
             command.setForecastStartDate(LocalDate.parse(forecastStartDate, DATE_FORMATTER));
             command.setOutput(Output.valueOf(output));
+            command.setCorrect(true);
+            commands.add(command);
         }
 
         return commands;
@@ -110,15 +120,19 @@ public class ExtCommandLineParser implements Parser {
 
     private void validateCommands() {
         boolean validAlgo = Arrays.stream(Algorithm.values()).anyMatch(a -> a.name().equals(algorithm));
-        if (period == null) {
-            period = ForecastPeriod.TOMORROW.name();
-        }
         boolean validPeriod = Arrays.stream(ForecastPeriod.values()).anyMatch(f -> f.name().equals(period));
-        if (forecastStartDate == null) {//TODO
-        }
-        boolean validDate = Arrays.stream(ForecastPeriod.values()).anyMatch(f -> f.name().equals(period));
         boolean validOutput = Arrays.stream(ForecastPeriod.values()).anyMatch(f -> f.name().equals(period));
 
+        boolean validDate = forecastStartDate.equalsIgnoreCase("TOMORROW") ||
+                forecastStartDate.matches(DATE_PATTERN);
+        if (validAlgo && validDate && validPeriod && validOutput) {
+
+            try{
+                LocalDate.parse(forecastStartDate, DATE_FORMATTER);
+            } catch(Exception e) {
+                allPartsValid = false;
+            }
+        }
     }
 
 

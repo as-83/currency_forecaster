@@ -9,6 +9,7 @@ import edu.abdsul.forecaster.formater.TextResultFormatter;
 import edu.abdsul.forecaster.formater.GraphResultFormatter;
 import edu.abdsul.forecaster.formater.ResultFormatter;
 import edu.abdsul.forecaster.parser.CommandLineParser;
+import edu.abdsul.forecaster.parser.ExtCommandLineParser;
 import edu.abdsul.forecaster.parser.Parser;
 
 import java.util.ArrayList;
@@ -36,7 +37,7 @@ public class ForecasterController {
      */
     public String getForecast(String commandLine) {
 
-        parser = new CommandLineParser();
+        parser = new ExtCommandLineParser();
         List<Command> commands = parser.parse(commandLine);
         if (commands.isEmpty()) {
             return INCORRECT_COMMAND_MESSAGE;
