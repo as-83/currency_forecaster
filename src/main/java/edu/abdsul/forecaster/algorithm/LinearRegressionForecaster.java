@@ -50,6 +50,8 @@ public class LinearRegressionForecaster implements Forecaster {
 
         forecasts.setNominal(rateHistory.getNominal());
         forecasts.setCurrencyCode(rateHistory.getCurrencyCode());
+        forecasts.setStartDate(command.getForecastStartDate());
+        forecasts.setFinishDate(command.getForecastStartDate().plusDays(command.getForecastPeriod().getDayCount() - 1));
 
         for (int i = 0; i < command.getForecastPeriod().getDayCount(); i++) {
             LocalDate date = command.getForecastStartDate().plusDays(i);

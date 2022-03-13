@@ -1,6 +1,8 @@
 package edu.abdsul.forecaster;
 
 import com.github.sh0nk.matplotlib4j.PythonExecutionException;
+import edu.abdsul.forecaster.formater.GraphResultFormatter;
+import edu.abdsul.forecaster.formater.ResultFormatter;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
@@ -9,13 +11,8 @@ import java.io.IOException;
 class GraphResultFormatterTest {
     @Test
     public void graphResultFormatterTest() {
-        GraphResultFormatter graphResultFormatter = new GraphResultFormatter();
+        ResultFormatter graphResultFormatter = new GraphResultFormatter();
 
-        try {
-            graphResultFormatter.drawPicture();
-        } catch (IOException | PythonExecutionException e) {
-            e.printStackTrace();
-        }
 
     }
 

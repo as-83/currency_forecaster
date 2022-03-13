@@ -61,7 +61,7 @@ public class FileDataSource implements DataSource {
     public Rate getLastNRates(CurrencyCode currencyCode, int count) {
         Rate rateHistory = new Rate(currencyCode);
         Path path = Paths.get(DATASOURCE_PATH + "/" + currencyCode.name() + FILE_NAME_SUFFIX);
-
+        LocalDate date = LocalDate.now();
         Scanner scanner;
         try {
             scanner = new Scanner(path);
@@ -76,11 +76,16 @@ public class FileDataSource implements DataSource {
                 String val = rowSells[RATE_ROW_NUMBER].replace(",", ".");
                 BigDecimal value = new BigDecimal(val);
                 String dateValue = rowSells[DATE_ROW_NUMBER];
-                LocalDate date = LocalDate.parse(dateValue, DATE_FORMATTER);
+                date = LocalDate.parse(dateValue, DATE_FORMATTER);
+                if (rateHistory.getRates().size() == 0) {
+                    rateHistory.setFinishDate(date);
+                }
                 rateHistory.addRate(date, value);
             }
+            rateHistory.setStartDate(date);
         } catch (IOException e) {
             e.printStackTrace();
+
         }
 
         return rateHistory;

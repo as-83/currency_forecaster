@@ -5,7 +5,8 @@ import edu.abdsul.forecaster.domain.Algorithm;
 import edu.abdsul.forecaster.domain.Command;
 import edu.abdsul.forecaster.domain.Output;
 import edu.abdsul.forecaster.domain.Rate;
-import edu.abdsul.forecaster.formater.ConsoleResultFormatter;
+import edu.abdsul.forecaster.formater.TextResultFormatter;
+import edu.abdsul.forecaster.formater.GraphResultFormatter;
 import edu.abdsul.forecaster.formater.ResultFormatter;
 import edu.abdsul.forecaster.parser.CommandLineParser;
 import edu.abdsul.forecaster.parser.Parser;
@@ -34,6 +35,7 @@ public class ForecasterController {
      * @return Строка с прогнозом курса валюты на заданное количество дней или расположение файла
      */
     public String getForecast(String commandLine) {
+
         parser = new CommandLineParser();
         List<Command> commands = parser.parse(commandLine);
         if (commands.isEmpty()) {
@@ -61,7 +63,7 @@ public class ForecasterController {
         if (output == Output.GRAPH) {
             return new GraphResultFormatter();
         }
-        return new ConsoleResultFormatter();
+        return new TextResultFormatter();
     }
 
     private Forecaster getNeededForecaster(Algorithm algorithm) {

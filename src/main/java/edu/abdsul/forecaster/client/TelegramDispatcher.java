@@ -18,12 +18,14 @@ public class TelegramDispatcher {
         bot.setUpdatesListener(updates -> {
             System.out.println("update has come");
 
-            if (updates.get(0).message() != null) {
+            if (updates.get(0).message() != null && updates.get(0).message().text() != null) {
                 String commandLine = updates.get(0).message().text();
                 String forecast = forecasterController.getForecast(commandLine);
                 long chatId = updates.get(0).message().chat().id();
-                if (commandLine.contains("graph")) {
-                    bot.execute(new SendPhoto(chatId, new File("./src/main/resources/img/img1.jpg")));
+
+                File imageFile = new  File(forecast);
+                if (imageFile.exists()) {
+                    bot.execute(new SendPhoto(chatId, imageFile));
                 } else {
                     bot.execute(new SendMessage(chatId, forecast));
                 }

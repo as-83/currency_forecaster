@@ -51,6 +51,8 @@ public class MysticAlgorithmForecaster implements Forecaster {
         }
 
         forecast.setNominal(rateHistory.getNominal());
+        forecast.setStartDate(command.getForecastStartDate());
+        forecast.setFinishDate(command.getForecastStartDate().plusDays(command.getForecastPeriod().getDayCount() - 1));
         //Вычисляем даты трех последних полнолуний
         List<LocalDate> moonDates = get3LastFoolMoons(command.getForecastStartDate());
 

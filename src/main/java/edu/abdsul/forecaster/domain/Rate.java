@@ -9,8 +9,12 @@ import java.util.LinkedHashMap;
  * валюты в определенную дату
  */
 public class Rate {
+    private LocalDate startDate;
+    private LocalDate finishDate;
     private CurrencyCode currencyCode;
     private int nominal;
+    private String message;
+
     private LinkedHashMap<LocalDate, BigDecimal> rates;
 
     public Rate(CurrencyCode currencyCode) {
@@ -38,12 +42,31 @@ public class Rate {
         return rates;
     }
 
-    public void setRates(LinkedHashMap<LocalDate, BigDecimal> rates) {
-        this.rates = rates;
-    }
-
     public void addRate(LocalDate date, BigDecimal value) {
         rates.put(date, value);
     }
 
+    public LocalDate getStartDate() {
+        return startDate;
+    }
+
+    public void setStartDate(LocalDate startDate) {
+        this.startDate = startDate;
+    }
+
+    public LocalDate getFinishDate() {
+        return finishDate;
+    }
+
+    public void setFinishDate(LocalDate finishDate) {
+        this.finishDate = finishDate;
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
+    }
 }

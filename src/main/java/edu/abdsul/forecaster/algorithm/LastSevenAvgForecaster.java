@@ -65,6 +65,8 @@ public class LastSevenAvgForecaster implements Forecaster {
                 forecasts.addRate(nextDate, avgValue);
             }
         }
+        forecasts.setStartDate(command.getForecastStartDate());
+        forecasts.setFinishDate(command.getForecastStartDate().plusDays(command.getForecastPeriod().getDayCount() - 1));
         return forecasts;
     }
 

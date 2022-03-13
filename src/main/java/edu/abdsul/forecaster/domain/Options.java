@@ -4,6 +4,11 @@ package edu.abdsul.forecaster.domain;
  */
 public enum Options {
     /**
+     * Дата
+     */
+    DATE,
+
+    /**
      * Период
      */
     PERIOD,

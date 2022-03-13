@@ -52,6 +52,8 @@ public class ActualAlgorithmForecaster implements Forecaster {
         BigDecimal expectedRate = twoYearsAgo.add(threeYearsAgo);
         forecasts.addRate(command.getForecastStartDate(), expectedRate);
         forecasts.setNominal(rateHistory.getNominal());
+        forecasts.setStartDate(command.getForecastStartDate());
+        forecasts.setFinishDate(command.getForecastStartDate().plusDays(command.getForecastPeriod().getDayCount() - 1));
         return forecasts;
     }
 
