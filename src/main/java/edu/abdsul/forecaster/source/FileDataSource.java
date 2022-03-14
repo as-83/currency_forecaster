@@ -25,38 +25,13 @@ public class FileDataSource implements DataSource {
     private static final String CELL_SEPARATOR = ";";
 
     /**
-     * Предоставляет список значений  исторических данных курса валюты
-     * по заданному коду
+     * Предоставляет список заданного количества значений значений  исторических
+     * данных курса валюты по заданному коду
      *
      * @param currencyCode код валюты
+     * @param count количество значений  исторических данных курса валюты
      * @return список значений  исторических данных курса валюты
      */
-    /*@Override
-    public List<Rate> getAllRates(CurrencyCode currencyCode) {
-
-        List<Rate> rates = new ArrayList<>();
-        Path path = Paths.get(DATASOURCE_PATH + "/" + currencyCode.name() + FILE_NAME_SUFFIX);
-
-        Scanner scanner;
-        try {
-            scanner = new Scanner(path);
-            scanner.nextLine();
-
-            while (scanner.hasNext()) {
-                String[] rowSells = scanner.nextLine().replaceAll("\"", "").split(CELL_SEPARATOR);
-                String val = rowSells[RATE_ROW_NUMBER].replace(",", ".");
-                BigDecimal value = new BigDecimal(val);
-                String dateValue = rowSells[DATE_ROW_NUMBER];
-                LocalDate date = LocalDate.parse(dateValue, DATE_FORMATTER);
-                rates.add(new Rate(date, value));
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        return rates;
-    }*/
-
     @Override
     public Rate getLastNRates(CurrencyCode currencyCode, int count) {
         Rate rateHistory = new Rate(currencyCode);
@@ -85,12 +60,18 @@ public class FileDataSource implements DataSource {
             rateHistory.setStartDate(date);
         } catch (IOException e) {
             e.printStackTrace();
-
         }
 
         return rateHistory;
     }
 
+    /**
+     * Предоставляет список всех значений  исторических данных курса валюты
+     * по заданному коду
+     *
+     * @param currencyCode код валюты
+     * @return список значений  исторических данных курса валюты
+     */
     @Override
     public Rate getAllRates(CurrencyCode currencyCode) {
         return getLastNRates(currencyCode, Integer.MAX_VALUE);

@@ -8,6 +8,10 @@ import com.pengrad.telegrambot.response.SendResponse;
 import edu.abdsul.forecaster.ForecasterController;
 
 import java.io.File;
+
+/**
+ * Класс TelegramDispatcher
+ */
 public class TelegramDispatcher {
     public static void main(String[] args) {
         String BOT_TOKEN = "5115954828:AAG0hpmjRhNCU1KNk_iw58tA_iR18vbx5MM";

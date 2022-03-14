@@ -16,7 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Класс Forecaster выполняет прогноз курса валюты
+ * Класс ForecasterController выполняет прогноз курса валюты
  * на заданный период в днях, по заданному алгоритму
  * прогнозирования  основываясь на исторических данных курса валюты
  * Алгоритм по умолчанию: среднее значение последних семи дней
@@ -24,6 +24,13 @@ import java.util.List;
  */
 public class ForecasterController {
     private static final String INCORRECT_COMMAND_MESSAGE = "\nНеверный формат комманды! Попробуйте еще раз!\n";
+    private static final String INFO_MESSAGE = "Пример команд:\n\n rate USD -date tomorrow -alg MYSTIC -output list\n\n" +
+            "Обязательно наличие первых двух команд: rate и код валюты - USD, TRY, EUR, AMD или BGN.\n" +
+            "Опционольно -date - дата прогноза с возможными значениями  tomorrow или конкретной датой в формате 02.22.2022\n" +
+            "Опционольно -period - период прогноза со значениями  week или month\n" +
+            "Опционольно -alg - алгоритм прогнозирования со значениями  ACTUAL, MYSTIC, LINEAR_REGRESSION\n" +
+            "Опционольно -output форма представления прогноза со значениями  list или graph\n" +
+            "";
     private Forecaster forecaster;
     private Parser parser;
     private ResultFormatter resultFormatter;
@@ -37,10 +44,14 @@ public class ForecasterController {
      */
     public String getForecast(String commandLine) {
 
+        if (commandLine.equals("/start")) {
+            return INFO_MESSAGE;
+        }
+
         parser = new ExtCommandLineParser();
         List<Command> commands = parser.parse(commandLine);
         if (commands.isEmpty()) {
-            return INCORRECT_COMMAND_MESSAGE;
+            return INCORRECT_COMMAND_MESSAGE + INFO_MESSAGE;
         }
 
         forecaster = getNeededForecaster(commands.get(0).getAlgorithm());//TODO fabric

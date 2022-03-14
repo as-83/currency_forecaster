@@ -17,8 +17,9 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class CommandLineParserTest {
 
-    public static final String CORRECT_COMMAND_LINE = "rate USD,TRY -date 02.02.2022 -alg mystic -output graph";
+    public static final String CORRECT_COMMAND_LINE = "rate USD,TRY -date 21.03.2022 -alg mystic -output graph";
     public static  ExtCommandLineParser commandLineParser;
+
     @BeforeAll
     public static void init() {
         commandLineParser = new ExtCommandLineParser();
@@ -32,10 +33,9 @@ class CommandLineParserTest {
         assertThat(commands).hasSize(2)
                 .allMatch(Command::isCorrect)
                 .allMatch(c -> c.getForecastPeriod().getDayCount() == 1)
-                .allMatch(c -> c.getForecastStartDate().isEqual(LocalDate.of(2022, 2, 2)))
+                .allMatch(c -> c.getForecastStartDate().isEqual(LocalDate.of(2022, 3, 21)))
                 .allMatch(c -> c.getOutput() == Output.GRAPH)
-                .allMatch(c -> c.getAlgorithm() == Algorithm.MYSTIC)
-        ;
+                .allMatch(c -> c.getAlgorithm() == Algorithm.MYSTIC);
     }
 
     @Test
