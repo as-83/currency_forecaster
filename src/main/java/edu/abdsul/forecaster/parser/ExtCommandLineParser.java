@@ -1,7 +1,7 @@
 package edu.abdsul.forecaster.parser;
 
 import edu.abdsul.forecaster.domain.*;
-import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.NotNull;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -45,20 +45,30 @@ public class ExtCommandLineParser implements Parser {
     @Override
     public List<Command> parse(String commandLine) {
 
-        List<String> commandLineParts = Arrays.stream(commandLine.trim().toUpperCase().split(" "))
-                .filter(s -> !s.isEmpty())
-                .collect(Collectors.toList());
+        List<String> commandLineParts = split(commandLine);
 
         if (!isValid(commandLineParts)) {
             return Collections.emptyList();
         }
 
+        extractCommands(commandLineParts);
+
+        validateCommands();
+
+        return initCommands();
+    }
+
+    private List<String> split(String commandLine) {
+        return Arrays.stream(commandLine.trim().toUpperCase().split(" "))
+                .filter(s -> !s.isEmpty())
+                .collect(Collectors.toList());
+    }
+
+    private void extractCommands(List<String> commandLineParts) {
         this.currencyCodes = Arrays.stream(commandLineParts.get(1).split(","))
                 .distinct()
                 .map(CurrencyCode::valueOf)
                 .collect(Collectors.toList());
-
-
         for (int i = 2; i < commandLineParts.size(); i++) {
             String option = commandLineParts.get(i);
             if (!option.startsWith("-") || i + 1 >= commandLineParts.size()) {
@@ -82,17 +92,16 @@ public class ExtCommandLineParser implements Parser {
                     break;
             }
         }
-        return initCommands();
     }
 
     private boolean isValid(List<String> commandLineParts) {
-         boolean hasAction = commandLineParts.get(0).equals(ACTION_COMMAND);
+        boolean hasAction = commandLineParts.get(0).equals(ACTION_COMMAND);
 
-        boolean correctOptions = commandLineParts.stream().filter(s ->s.startsWith("-"))
+        boolean correctOptions = commandLineParts.stream().filter(s -> s.startsWith("-"))
                 .map(s -> s.substring(1))
                 .allMatch(s -> Arrays.stream(Options.values()).anyMatch(o -> s.equalsIgnoreCase(o.name())));
 
-        boolean correctCurrency = Arrays.stream(commandLineParts.get(1).split(","))
+        boolean correctCurrency = commandLineParts.size() > 1 && Arrays.stream(commandLineParts.get(1).split(","))
                 .allMatch(s -> Arrays.stream(CurrencyCode.values()).anyMatch(c -> s.equalsIgnoreCase(c.name())))
                 && commandLineParts.get(1).split(",").length < 6;
 
@@ -100,10 +109,10 @@ public class ExtCommandLineParser implements Parser {
     }
 
     private List<Command> initCommands() {
-        validateCommands();
+
         List<Command> commands = new ArrayList<>();//TODO checking commands
         if (!allPartsValid) {
-           return commands;
+            return commands;
         }
         for (CurrencyCode currencyCode : currencyCodes) {
             Command command = new Command();
@@ -131,12 +140,12 @@ public class ExtCommandLineParser implements Parser {
 
         boolean validDate = forecastStartDate.equalsIgnoreCase("TOMORROW") ||
                 forecastStartDate.matches(DATE_PATTERN);
-        allPartsValid  = validAlgo && validDate && validPeriod && validOutput;
+        allPartsValid = validAlgo && validDate && validPeriod && validOutput;
 
         if (forecastStartDate.matches(DATE_PATTERN)) {
-            try{
+            try {
                 LocalDate.parse(forecastStartDate, DATE_FORMATTER);
-            } catch(Exception e) {
+            } catch (Exception e) {
                 allPartsValid = false;
             }
         }
