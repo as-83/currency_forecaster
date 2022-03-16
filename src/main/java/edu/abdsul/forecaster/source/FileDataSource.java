@@ -1,10 +1,14 @@
 package edu.abdsul.forecaster.source;
 
+import edu.abdsul.forecaster.client.Bot;
 import edu.abdsul.forecaster.domain.CurrencyCode;
 import edu.abdsul.forecaster.domain.Rate;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.nio.file.FileSystems;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDate;
@@ -17,12 +21,13 @@ import java.util.*;
  */
 public class FileDataSource implements DataSource {
 
-    private static final String DATASOURCE_PATH = "./data";
+    private static final String DATASOURCE_PATH = "classes/data/";
     private static final String FILE_NAME_SUFFIX = "_F01_02_2005_T05_03_2022.csv";
     private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("dd.MM.yyyy");
     private static final int DATE_ROW_NUMBER = 1;
     private static final int RATE_ROW_NUMBER = 2;
     private static final String CELL_SEPARATOR = ";";
+    private static final Logger logger = LoggerFactory.getLogger(FileDataSource.class);
 
     /**
      * Предоставляет список заданного количества значений значений  исторических
@@ -35,13 +40,14 @@ public class FileDataSource implements DataSource {
     @Override
     public Rate getLastNRates(CurrencyCode currencyCode, int count) {
         Rate rateHistory = new Rate(currencyCode);
-        Path path = Paths.get(DATASOURCE_PATH + "/" + currencyCode.name() + FILE_NAME_SUFFIX);
+        Path path = Paths.get(DATASOURCE_PATH + currencyCode.name() + FILE_NAME_SUFFIX);
         LocalDate date = LocalDate.now();
         Scanner scanner;
         try {
             scanner = new Scanner(path);
             scanner.nextLine();
             int rowCount = 0;
+
             while (scanner.hasNext() && rowCount++ < count) {
                 String[] rowSells = scanner.nextLine().replaceAll("\"", "").split(CELL_SEPARATOR);
 
@@ -59,7 +65,7 @@ public class FileDataSource implements DataSource {
             }
             rateHistory.setStartDate(date);
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.debug(e.getMessage());
         }
 
         return rateHistory;

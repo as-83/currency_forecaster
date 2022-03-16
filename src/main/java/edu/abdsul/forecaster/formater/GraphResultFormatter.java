@@ -18,9 +18,11 @@ public class GraphResultFormatter implements ResultFormatter {
 
     public static final String LEGEND_LOCATION = "upper left";
     public static final String ERROR_MESSAGE = "Ошибка! Попробуйте еще раз";
-    public static final String FILE_LOCATION = "./src/main/resources/img/";
+    public static final String FILE_LOCATION = "src/main/resources/img/";
     public static final String EXT = ".png";
     public static final String IMG_TITLE_PREFIX = "Прогноз курса на период: ";
+    public static final String Y_LABEL = "курс";
+    public static final String X_LABEL = "дни";
 
     /**
      * Отображает данные прогноза
@@ -35,15 +37,9 @@ public class GraphResultFormatter implements ResultFormatter {
             return ERROR_MESSAGE;
         }
 
-        DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern(DATE_PATTERN);
-        String period = dateFormatter.format(rates.get(0).getStartDate()) + " - " + dateFormatter.format(rates.get(0).getFinishDate());
-        String imageTitle = IMG_TITLE_PREFIX + period;
-
-        UUID uuid = UUID.randomUUID();
-
-        String imageLocation = FILE_LOCATION + uuid + EXT;
+        String imageLocation = FILE_LOCATION + UUID.randomUUID() + EXT;
         Plot plt = Plot.create();
-        plt.title(imageTitle);
+        plt.title(createImageTitle(rates));
 
         List<Double> dates = Stream.iterate(1.0, i -> i + 1).limit(rates.get(0).getRates().size()).collect(Collectors.toList());
         for (Rate rate : rates) {
@@ -53,8 +49,9 @@ public class GraphResultFormatter implements ResultFormatter {
             plt.plot().add(dates, values).label(rate.getCurrencyCode().name());
             plt.legend().loc(LEGEND_LOCATION);
         }
-        plt.ylabel("курс");
-        plt.xlabel("дни");
+
+        plt.ylabel(Y_LABEL);
+        plt.xlabel(X_LABEL);
         plt.savefig(imageLocation).dpi(200);
         try {
             plt.executeSilently();
@@ -64,5 +61,11 @@ public class GraphResultFormatter implements ResultFormatter {
         }
         plt.close();
         return imageLocation;
+    }
+
+    private String createImageTitle(List<Rate> rates) {
+        DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern(DATE_PATTERN);
+        String period = dateFormatter.format(rates.get(0).getStartDate()) + " - " + dateFormatter.format(rates.get(0).getFinishDate());
+        return IMG_TITLE_PREFIX + period;
     }
 }

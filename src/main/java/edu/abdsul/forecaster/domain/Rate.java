@@ -22,6 +22,14 @@ public class Rate {
         rates = new LinkedHashMap<>();
     }
 
+    public Rate(LocalDate startDate, LocalDate finishDate, CurrencyCode currencyCode, int nominal) {
+        this.startDate = startDate;
+        this.finishDate = finishDate;
+        this.currencyCode = currencyCode;
+        this.nominal = nominal;
+        this.rates = new LinkedHashMap<>();
+    }
+
     public CurrencyCode getCurrencyCode() {
         return currencyCode;
     }

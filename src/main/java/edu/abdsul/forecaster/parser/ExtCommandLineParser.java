@@ -69,6 +69,7 @@ public class ExtCommandLineParser implements Parser {
                 .distinct()
                 .map(CurrencyCode::valueOf)
                 .collect(Collectors.toList());
+
         for (int i = 2; i < commandLineParts.size(); i++) {
             String option = commandLineParts.get(i);
             if (!option.startsWith("-") || i + 1 >= commandLineParts.size()) {
