@@ -6,7 +6,6 @@ import edu.abdsul.forecaster.domain.RateBuilder;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
-import java.io.File;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -14,8 +13,7 @@ import java.util.List;
 
 import static org.assertj.core.api.Java6Assertions.assertThat;
 
-class GraphResultFormatterTest {
-
+class TextResultFormatterTest {
     private static List<Rate> rates = new ArrayList<>();
 
     @BeforeAll
@@ -29,23 +27,25 @@ class GraphResultFormatterTest {
     }
 
     @Test
-    public void whenCorrectRateThenCreatesFile() {
-        ResultFormatter formatter = new GraphResultFormatter();
+    public void whenRateThenStringWithRateParams() {
+        ResultFormatter formatter = new TextResultFormatter();
 
         String result = formatter.format(rates);
-        File file = new File(result);
-        assertThat(file.exists()).isTrue();
+
+        assertThat(result).isNotEmpty()
+                .contains("55,55")
+                .contains("TRY")
+                .contains("10")
+                .hasLineCount(2);
     }
 
     @Test
-    public void whenEmptyRateThenErrorMessage() {
-
+    public void whenEmptyRateThenMessage() {
         rates.get(0).getRates().clear();
-        ResultFormatter formatter = new GraphResultFormatter();
+        ResultFormatter formatter = new TextResultFormatter();
 
         String result = formatter.format(rates);
-        File file = new File(result);
-        assertThat(file.exists()).isFalse();
+
         assertThat(result).isEqualToIgnoringCase(ResultFormatter.EMPTY_RESULT_MESSAGE);
     }
 

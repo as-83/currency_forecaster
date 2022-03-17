@@ -1,6 +1,5 @@
 package edu.abdsul.forecaster.source;
 
-import edu.abdsul.forecaster.client.Bot;
 import edu.abdsul.forecaster.domain.CurrencyCode;
 import edu.abdsul.forecaster.domain.Rate;
 import org.slf4j.Logger;
@@ -8,7 +7,6 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.math.BigDecimal;
-import java.nio.file.FileSystems;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDate;
@@ -21,7 +19,7 @@ import java.util.*;
  */
 public class FileDataSource implements DataSource {
 
-    private static final String DATASOURCE_PATH = "classes/data/";
+    private static final String DATASOURCE_PATH = "src/main/resources/data/";
     private static final String FILE_NAME_SUFFIX = "_F01_02_2005_T05_03_2022.csv";
     private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("dd.MM.yyyy");
     private static final int DATE_ROW_NUMBER = 1;

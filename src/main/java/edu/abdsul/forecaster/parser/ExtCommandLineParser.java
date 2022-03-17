@@ -1,7 +1,7 @@
 package edu.abdsul.forecaster.parser;
 
+import ch.qos.logback.classic.pattern.LineOfCallerConverter;
 import edu.abdsul.forecaster.domain.*;
-import org.jetbrains.annotations.NotNull;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -32,7 +32,7 @@ public class ExtCommandLineParser implements Parser {
         this.period = ForecastPeriod.DATE.name();
         this.forecastStartDate = DATE_FORMATTER.format(LocalDate.now().plusDays(1));
         this.algorithm = Algorithm.LINEAR_REGRESSION.name();
-        this.output = Output.LIST.name();
+        this.output = OutputType.LIST.name();
         this.allPartsValid = true;
     }
 
@@ -111,7 +111,7 @@ public class ExtCommandLineParser implements Parser {
 
     private List<Command> initCommands() {
 
-        List<Command> commands = new ArrayList<>();//TODO checking commands
+        List<Command> commands = new ArrayList<>();
         if (!allPartsValid) {
             return commands;
         }
@@ -126,7 +126,7 @@ public class ExtCommandLineParser implements Parser {
                 command.setForecastStartDate(LocalDate.now().plusDays(1));
             }
 
-            command.setOutput(Output.valueOf(output));
+            command.setOutput(OutputType.valueOf(output));
             command.setCorrect(true);
             commands.add(command);
         }
@@ -137,7 +137,7 @@ public class ExtCommandLineParser implements Parser {
     private void validateCommands() {
         boolean validAlgo = Arrays.stream(Algorithm.values()).anyMatch(a -> a.name().equals(algorithm));
         boolean validPeriod = Arrays.stream(ForecastPeriod.values()).anyMatch(f -> f.name().equals(period));
-        boolean validOutput = Arrays.stream(Output.values()).anyMatch(o -> o.name().equals(output));
+        boolean validOutput = Arrays.stream(OutputType.values()).anyMatch(o -> o.name().equals(output));
 
         boolean validDate = forecastStartDate.equalsIgnoreCase("TOMORROW") ||
                 forecastStartDate.matches(DATE_PATTERN);
@@ -145,7 +145,10 @@ public class ExtCommandLineParser implements Parser {
 
         if (forecastStartDate.matches(DATE_PATTERN)) {
             try {
-                LocalDate.parse(forecastStartDate, DATE_FORMATTER);
+                LocalDate date = LocalDate.parse(forecastStartDate, DATE_FORMATTER);
+                if (date.isBefore(LocalDate.now())) {
+                    allPartsValid = false;
+                }
             } catch (Exception e) {
                 allPartsValid = false;
             }

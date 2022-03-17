@@ -1,4 +1,4 @@
-package edu.abdsul.forecaster.client;
+package edu.abdsul.forecaster.bot;
 
 import com.pengrad.telegrambot.TelegramBot;
 import com.pengrad.telegrambot.UpdatesListener;
@@ -45,7 +45,7 @@ public class Bot {
             logger.info("Forecast: " + forecast );
             long chatId = update.message().chat().id();
 
-            BaseRequest request = null;
+            BaseRequest request;
 
             File imageFile = new  File(forecast);
 

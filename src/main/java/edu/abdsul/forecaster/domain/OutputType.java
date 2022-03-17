@@ -3,7 +3,7 @@ package edu.abdsul.forecaster.domain;
 /**
  * Варианты представления прогноза
  */
-public enum Output {
+public enum OutputType {
     /**
      * Список
      */

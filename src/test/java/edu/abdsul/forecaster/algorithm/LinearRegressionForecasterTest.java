@@ -1,11 +1,10 @@
 package edu.abdsul.forecaster.algorithm;
 
-import edu.abdsul.forecaster.domain.Command;
-import edu.abdsul.forecaster.domain.CurrencyCode;
-import edu.abdsul.forecaster.domain.ForecastPeriod;
-import edu.abdsul.forecaster.domain.Rate;
+import edu.abdsul.forecaster.domain.*;
+import org.assertj.core.data.Percentage;
 import org.junit.jupiter.api.Test;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 
 import static org.assertj.core.api.Java6Assertions.assertThat;
@@ -13,18 +12,19 @@ import static org.assertj.core.api.Java6Assertions.assertThat;
 class LinearRegressionForecasterTest {
 
     @Test
-    void getForecastReturnsProperSizeForecast() {
+    void getForecastReturnsProperSizeAndDates() {
         Forecaster forecaster = new LinearRegressionForecaster();
-        Command command = new Command();
-        command.setForecastStartDate(LocalDate.now().plusDays(1));
-        command.setCurrencyCode(CurrencyCode.EUR);
-        command.setForecastPeriod(ForecastPeriod.MONTH);
+        Command command = new CommandBuilder().setForecastStartDate(LocalDate.now().plusDays(1))
+                .setCurrencyCode(CurrencyCode.EUR)
+                .setForecastPeriod(ForecastPeriod.MONTH).build();
 
         Rate rate = forecaster.getForecast(command);
 
         assertThat(rate.getRates()).hasSize(30);
         assertThat(rate.getRates().keySet()).contains(LocalDate.now().plusDays(1));
         assertThat(rate.getRates().keySet()).contains(LocalDate.now().plusDays(30));
+        assertThat(rate.getRates().get(LocalDate.of(2022, 3,25)))
+                .isCloseTo(new BigDecimal("123.43"), Percentage.withPercentage(0.005));
 
     }
 

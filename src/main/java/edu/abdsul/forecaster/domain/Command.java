@@ -4,7 +4,7 @@ import java.time.LocalDate;
 
 /**
  * Класс Command представляет код валюты, период прогноза,
- *  алгоритм прогнозирования, форму вывода результата  и корректость команды
+ * алгоритм прогнозирования, форму вывода результата  и корректость команды
  */
 public class Command {
 
@@ -13,7 +13,21 @@ public class Command {
     private LocalDate forecastStartDate;
     private CurrencyCode currencyCode;
     private Algorithm algorithm;
-    private Output output;
+    private OutputType outputType;
+
+    public Command() {
+    }
+
+    public Command(boolean correct, ForecastPeriod forecastPeriod,
+                   LocalDate forecastStartDate, CurrencyCode currencyCode,
+                   Algorithm algorithm, OutputType outputType) {
+        this.correct = correct;
+        this.forecastPeriod = forecastPeriod;
+        this.forecastStartDate = forecastStartDate;
+        this.currencyCode = currencyCode;
+        this.algorithm = algorithm;
+        this.outputType = outputType;
+    }
 
     public ForecastPeriod getForecastPeriod() {
         return forecastPeriod;
@@ -47,12 +61,12 @@ public class Command {
         this.algorithm = algorithm;
     }
 
-    public Output getOutput() {
-        return output;
+    public OutputType getOutput() {
+        return outputType;
     }
 
-    public void setOutput(Output output) {
-        this.output = output;
+    public void setOutput(OutputType outputType) {
+        this.outputType = outputType;
     }
 
     public LocalDate getForecastStartDate() {

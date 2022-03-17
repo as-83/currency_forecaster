@@ -1,14 +1,14 @@
 package edu.abdsul.forecaster;
 
-import edu.abdsul.forecaster.algorithm.*;
+import edu.abdsul.forecaster.algorithm.Forecaster;
+import edu.abdsul.forecaster.algorithm.ForecasterFabric;
 import edu.abdsul.forecaster.domain.Algorithm;
 import edu.abdsul.forecaster.domain.Command;
-import edu.abdsul.forecaster.domain.Output;
+import edu.abdsul.forecaster.domain.OutputType;
 import edu.abdsul.forecaster.domain.Rate;
-import edu.abdsul.forecaster.formater.TextResultFormatter;
 import edu.abdsul.forecaster.formater.GraphResultFormatter;
 import edu.abdsul.forecaster.formater.ResultFormatter;
-import edu.abdsul.forecaster.parser.CommandLineParser;
+import edu.abdsul.forecaster.formater.TextResultFormatter;
 import edu.abdsul.forecaster.parser.ExtCommandLineParser;
 import edu.abdsul.forecaster.parser.Parser;
 
@@ -62,6 +62,7 @@ public class ForecasterController {
         List<Rate> forecasts = getForecasts(commands);
 
         resultFormatter = getResultFormatter(commands.get(0).getOutput());
+
         return resultFormatter.format(forecasts);
     }
 
@@ -74,8 +75,8 @@ public class ForecasterController {
         return forecasts;
     }
 
-    private ResultFormatter getResultFormatter(Output output) {
-        if (output == Output.GRAPH) {
+    private ResultFormatter getResultFormatter(OutputType outputType) {
+        if (outputType == OutputType.GRAPH) {
             return new GraphResultFormatter();
         }
         return new TextResultFormatter();

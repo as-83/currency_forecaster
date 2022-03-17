@@ -17,6 +17,7 @@ import java.time.LocalDate;
  */
 public class ActualAlgorithmForecaster implements Forecaster {
 
+    public static final int ALGORITHM_SCOPE = 2;
     private DataSource dataSource = new FileDataSource();
 
     /**
@@ -36,8 +37,9 @@ public class ActualAlgorithmForecaster implements Forecaster {
         Rate forecasts = new Rate(command.getCurrencyCode());
 
         Rate rateHistory = dataSource.getAllRates(command.getCurrencyCode());
-        boolean isForecastable = !command.getForecastStartDate().isAfter(LocalDate.now().plusYears(2));
-        if(!isForecastable) {//TODO error field in Rate and write error to it
+        boolean isInScope = !command.getForecastStartDate().isAfter(LocalDate.now().plusYears(ALGORITHM_SCOPE));
+
+        if(!isInScope) {
             return forecasts;
         }
 

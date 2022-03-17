@@ -38,7 +38,7 @@ public class CommandLineParser implements Parser {
             String[] currencyCodes = commandLineParts[CURRENCY_CODE_INDEX].split(",");
             ForecastPeriod fPeriod = ForecastPeriod.TOMORROW;
             Algorithm algorithm = Algorithm.ACTUAL;
-            Output output = Output.LIST;
+            OutputType outputType = OutputType.LIST;
 
             for (int i = 2; i < commandLineParts.length; i++) {
                 Options option = Options.valueOf(commandLineParts[i].substring(1));
@@ -50,7 +50,7 @@ public class CommandLineParser implements Parser {
                         algorithm = Algorithm.valueOf(commandLineParts[++i]);
                         break;
                     case OUTPUT:
-                        output = Output.valueOf(commandLineParts[++i]);
+                        outputType = OutputType.valueOf(commandLineParts[++i]);
                         break;
                 }
             }
@@ -64,7 +64,7 @@ public class CommandLineParser implements Parser {
                 } else {
                     command.setForecastStartDate(LocalDate.now().plusDays(1));
                 }
-                command.setOutput(output);
+                command.setOutput(outputType);
                 command.setAlgorithm(algorithm);
                 command.setCorrect(true);
                 commands.add(command);
@@ -106,7 +106,7 @@ public class CommandLineParser implements Parser {
         boolean isAlgoArgValid = Arrays.stream(Algorithm.values())
                 .map(Enum::name)
                 .anyMatch(p -> p.equalsIgnoreCase(commandLineParts[ALGORITHM_INDEX]));
-        boolean isOutputValid = Arrays.stream(Output.values())
+        boolean isOutputValid = Arrays.stream(OutputType.values())
                 .anyMatch(o ->commandLineParts[OUTPUT_INDEX].equalsIgnoreCase(o.name()));
 
         return isActionArgValid && isPeriodValid && isCurrencyCodeValid && isKeysValid && isAlgoArgValid && isOutputValid;
