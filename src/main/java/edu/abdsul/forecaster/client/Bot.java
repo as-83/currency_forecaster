@@ -37,8 +37,8 @@ public class Bot {
         if (update.message() != null && update.message().text() != null) {
             String commandLine = update.message().text();
 
-            logger.info(new StringBuilder().append("CommandLine: ")
-                    .append(commandLine).append(" from ").append(update.message().from().firstName()).toString());
+            logger.info("CommandLine: " +
+                    commandLine + " from " + update.message().from().firstName());
 
             String forecast = forecasterController.getForecast(commandLine);
 
@@ -48,6 +48,7 @@ public class Bot {
             BaseRequest request = null;
 
             File imageFile = new  File(forecast);
+
             if (imageFile.exists()) {
                 request = new SendPhoto(chatId, imageFile);
             } else {

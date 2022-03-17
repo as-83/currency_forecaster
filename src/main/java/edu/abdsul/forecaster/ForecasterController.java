@@ -29,8 +29,9 @@ public class ForecasterController {
             "Опционольно -date - дата прогноза с возможными значениями  tomorrow или конкретной датой в формате 02.22.2022\n" +
             "Опционольно -period - период прогноза со значениями  week или month\n" +
             "Опционольно -alg - алгоритм прогнозирования со значениями  ACTUAL, MYSTIC, LINEAR_REGRESSION\n" +
-            "Опционольно -output форма представления прогноза со значениями  list или graph\n" +
-            "";
+            "Опционольно -output форма представления прогноза со значениями  list или graph\n";
+    public static final String START_COMMAND = "/start";
+
     private Forecaster forecaster;
     private Parser parser;
     private ResultFormatter resultFormatter;
@@ -44,17 +45,19 @@ public class ForecasterController {
      */
     public String getForecast(String commandLine) {
 
-        if (commandLine.equals("/start")) {
+        if (commandLine.equals(START_COMMAND)) {
             return INFO_MESSAGE;
         }
 
         parser = new ExtCommandLineParser();
         List<Command> commands = parser.parse(commandLine);
+
         if (commands.isEmpty()) {
             return INCORRECT_COMMAND_MESSAGE + INFO_MESSAGE;
         }
 
-        forecaster = getNeededForecaster(commands.get(0).getAlgorithm());//TODO fabric
+        Algorithm algorithm = commands.get(0).getAlgorithm();
+        forecaster = new ForecasterFabric().getForecaster(algorithm);
 
         List<Rate> forecasts = getForecasts(commands);
 
@@ -78,14 +81,4 @@ public class ForecasterController {
         return new TextResultFormatter();
     }
 
-    private Forecaster getNeededForecaster(Algorithm algorithm) {
-        Forecaster forecaster;
-        switch (algorithm) {
-            case ACTUAL: forecaster = new ActualAlgorithmForecaster(); break;
-            case MYSTIC: forecaster = new MysticAlgorithmForecaster(); break;
-            case LINEAR_REGRESSION: forecaster = new LinearRegressionForecaster(); break;
-            default: forecaster = new LastSevenAvgForecaster();
-        }
-        return forecaster;
-    }
 }
