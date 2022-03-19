@@ -37,9 +37,12 @@ public class LinearRegressionForecaster implements Forecaster {
         Rate forecasts = new Rate(command.getCurrencyCode());
 
         Rate rateHistory = dataSource.getLastNRates(command.getCurrencyCode(), 30);
-        if (rateHistory.getRates().isEmpty()) {
-            return rateHistory;
+        boolean isPastDate = command.getForecastStartDate().isBefore(LocalDate.now().plusDays(1));
+
+        if (rateHistory.getRates().isEmpty() || isPastDate) {
+            return forecasts;
         }
+
         LocalDate lastRateDate = rateHistory.getRates().keySet().stream().findFirst().get();
         int absentDays = (int)ChronoUnit.DAYS.between(lastRateDate, command.getForecastStartDate());
 

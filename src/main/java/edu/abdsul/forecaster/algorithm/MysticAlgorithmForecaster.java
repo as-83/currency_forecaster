@@ -21,7 +21,9 @@ import java.util.Random;
  */
 public class MysticAlgorithmForecaster implements Forecaster {
 
+    public static final int ALGORITHM_LIMIT = 1;
     private DataSource dataSource = new FileDataSource();
+    private Rate forecast;
 
     /**
      * Вычисление прогнозируемого курса валюты на заданный в днях срок
@@ -37,47 +39,46 @@ public class MysticAlgorithmForecaster implements Forecaster {
      */
     @Override
     public Rate getForecast(Command command) {
-
-        Rate forecast = new Rate(command.getCurrencyCode());
+        forecast = new Rate(command.getCurrencyCode());
 
         Rate rateHistory = dataSource.getAllRates(command.getCurrencyCode());
-        boolean isForecastable = command.getForecastStartDate().isBefore(LocalDate.now().plusMonths(1));
-        if (!isForecastable) {//TODO error field in Rate and write error to it
-            return forecast;
-        }
 
-        if (rateHistory.getRates().isEmpty()) {
-            return rateHistory;
+        if (!isDateInScope(command.getForecastStartDate()) || rateHistory.getRates().isEmpty()) {
+            return forecast;
         }
 
         forecast.setNominal(rateHistory.getNominal());
         forecast.setStartDate(command.getForecastStartDate());
         forecast.setFinishDate(command.getForecastStartDate().plusDays(command.getForecastPeriod().getDayCount() - 1));
-        //Вычисляем даты трех последних полнолуний
+
         List<LocalDate> moonDates = get3LastFoolMoons(command.getForecastStartDate());
 
-        //Получаем сумму курсов валют в эти дни
-        BigDecimal rateSum = new BigDecimal(0);
-        for (LocalDate date : moonDates) {
-            BigDecimal rate = getRateFromPast(rateHistory, date);
-            rateSum = rateSum.add(rate);
-        }
+        //Получаем средний курс трех последних полнолуний
+        BigDecimal avgRate = getAvgRate(rateHistory, moonDates);
 
-        //Вычисляем среднее
-        BigDecimal avgRate = rateSum.divide(new BigDecimal(3), BigDecimal.ROUND_UP);
         forecast.addRate(command.getForecastStartDate(), avgRate);
 
-        //Если прогноз больше чем на день, то Последующие даты рассчитываются
-        // рекуррентно по формуле - значение предыдущей даты  + случайное
-        // число от -10% до +10% от значения предыдущей даты
+        generateNextRates(command, avgRate);
 
+        return forecast;
+    }
+
+    private void generateNextRates(Command command, BigDecimal avgRate) {
         for (int i = 1; i < command.getForecastPeriod().getDayCount(); i++) {
             double rand = 0.9 + new Random().nextDouble() * 0.2;
             BigDecimal rateValue = avgRate.multiply(BigDecimal.valueOf(rand));
             forecast.addRate(command.getForecastStartDate().minusDays(i), rateValue);
         }
+    }
 
-        return forecast;
+    private BigDecimal getAvgRate(Rate rateHistory, List<LocalDate> moonDates) {
+        BigDecimal rateSum = new BigDecimal(0);
+        for (LocalDate date : moonDates) {
+            BigDecimal rate = getRateFromPast(rateHistory, date);
+            rateSum = rateSum.add(rate);
+        }
+        
+        return rateSum.divide(new BigDecimal(3), BigDecimal.ROUND_UP);
     }
 
 
@@ -90,7 +91,6 @@ public class MysticAlgorithmForecaster implements Forecaster {
                 moonDates.add(foolMoonDate);
             }
         }
-
         return moonDates;
     }
 
@@ -102,6 +102,11 @@ public class MysticAlgorithmForecaster implements Forecaster {
             rateInPast = rateHistory.getRates().get(nearestDate);
         }
         return rateInPast;
+    }
+
+    private boolean isDateInScope(LocalDate date) {
+        return date.isBefore(LocalDate.now().plusMonths(ALGORITHM_LIMIT))
+                && date.isAfter(LocalDate.now());
     }
 
     public void setDataSource(DataSource dataSource) {

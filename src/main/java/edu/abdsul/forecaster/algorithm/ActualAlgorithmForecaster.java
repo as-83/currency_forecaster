@@ -37,14 +37,9 @@ public class ActualAlgorithmForecaster implements Forecaster {
         Rate forecasts = new Rate(command.getCurrencyCode());
 
         Rate rateHistory = dataSource.getAllRates(command.getCurrencyCode());
-        boolean isInScope = !command.getForecastStartDate().isAfter(LocalDate.now().plusYears(ALGORITHM_SCOPE));
 
-        if(!isInScope) {
+        if(!isDateInScope(command.getForecastStartDate()) || rateHistory.getRates().isEmpty()) {
             return forecasts;
-        }
-
-        if (rateHistory.getRates().isEmpty()) {
-            return rateHistory;
         }
 
         forecasts.setNominal(rateHistory.getNominal());
@@ -63,5 +58,10 @@ public class ActualAlgorithmForecaster implements Forecaster {
 
     public void setDataSource(DataSource dataSource) {
         this.dataSource = dataSource;
+    }
+
+    private boolean isDateInScope(LocalDate date) {
+        return date.isBefore(LocalDate.now().plusYears(ALGORITHM_SCOPE))
+                && date.isAfter(LocalDate.now());
     }
 }

@@ -17,17 +17,16 @@ import java.io.File;
  */
 public class Bot {
     private static final Logger logger = LoggerFactory.getLogger(Bot.class);
-    private final TelegramBot bot = new TelegramBot("5115954828:AAG0hpmjRhNCU1KNk_iw58tA_iR18vbx5MM");
+    private final TelegramBot bot = new TelegramBot(System.getenv("BOT_TOKEN"));
 
     public void serve() {
 
-       logger.info("Bot started");
+        logger.info("Bot started");
 
         bot.setUpdatesListener(updates -> {
             updates.forEach(this::process);
             return UpdatesListener.CONFIRMED_UPDATES_ALL;
         });
-
     }
 
     private void process(Update update) {
@@ -37,23 +36,25 @@ public class Bot {
         if (update.message() != null && update.message().text() != null) {
             String commandLine = update.message().text();
 
-            logger.info("CommandLine: " +
-                    commandLine + " from " + update.message().from().firstName());
+            logger.info("CommandLine: \"" +
+                    commandLine + "\". From user: " + update.message().from().firstName());
 
             String forecast = forecasterController.getForecast(commandLine);
 
-            logger.info("Forecast: " + forecast );
+            logger.info("Forecast: {" + forecast + " }");
             long chatId = update.message().chat().id();
 
             BaseRequest request;
-
-            File imageFile = new  File(forecast);
+            File imageFile = new File(forecast);
 
             if (imageFile.exists()) {
                 request = new SendPhoto(chatId, imageFile);
+                logger.info("Image was sent to user");
             } else {
                 request = new SendMessage(chatId, forecast);
+                logger.info("Text was sent to user");
             }
+
             bot.execute(request);
         }
     }

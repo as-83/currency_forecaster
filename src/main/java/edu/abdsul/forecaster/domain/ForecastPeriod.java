@@ -1,5 +1,7 @@
 package edu.abdsul.forecaster.domain;
 
+import java.time.LocalDate;
+
 /**
  * Сроки прогноза
  */
@@ -18,7 +20,7 @@ public enum ForecastPeriod {
     /**
      * Месяц
      */
-    MONTH(30),
+    MONTH(LocalDate.now().lengthOfMonth()),
 
     /**
      * Конкретная дата

@@ -39,7 +39,6 @@ class GraphResultFormatterTest {
 
     @Test
     public void whenEmptyRateThenErrorMessage() {
-
         rates.get(0).getRates().clear();
         ResultFormatter formatter = new GraphResultFormatter();
 

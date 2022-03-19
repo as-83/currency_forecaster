@@ -5,13 +5,13 @@ import edu.abdsul.forecaster.domain.Rate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.math.BigDecimal;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.*;
 
 /**
  * Класс FileDataSource считывает исторические данные курса
@@ -19,7 +19,7 @@ import java.util.*;
  */
 public class FileDataSource implements DataSource {
 
-    private static final String DATASOURCE_PATH = "src/main/resources/data/";
+    private static final String DATASOURCE_PATH = "data/";
     private static final String FILE_NAME_SUFFIX = "_F01_02_2005_T05_03_2022.csv";
     private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("dd.MM.yyyy");
     private static final int DATE_ROW_NUMBER = 1;
@@ -37,36 +37,67 @@ public class FileDataSource implements DataSource {
      */
     @Override
     public Rate getLastNRates(CurrencyCode currencyCode, int count) {
-        Rate rateHistory = new Rate(currencyCode);
-        Path path = Paths.get(DATASOURCE_PATH + currencyCode.name() + FILE_NAME_SUFFIX);
-        LocalDate date = LocalDate.now();
-        Scanner scanner;
-        try {
-            scanner = new Scanner(path);
-            scanner.nextLine();
-            int rowCount = 0;
 
-            while (scanner.hasNext() && rowCount++ < count) {
-                String[] rowSells = scanner.nextLine().replaceAll("\"", "").split(CELL_SEPARATOR);
+        InputStream is = getFileAsIOStream(currencyCode);
+        Rate rateFromFile = new Rate(currencyCode);
 
-                if (rateHistory.getNominal() == 0) {
-                    rateHistory.setNominal(Integer.parseInt(rowSells[0]));
-                }
-                String val = rowSells[RATE_ROW_NUMBER].replace(",", ".");
-                BigDecimal value = new BigDecimal(val);
-                String dateValue = rowSells[DATE_ROW_NUMBER];
-                date = LocalDate.parse(dateValue, DATE_FORMATTER);
-                if (rateHistory.getRates().size() == 0) {
-                    rateHistory.setFinishDate(date);
-                }
-                rateHistory.addRate(date, value);
-            }
-            rateHistory.setStartDate(date);
-        } catch (IOException e) {
-            logger.debug(e.getMessage());
+        if (is == null) {
+            return rateFromFile;
         }
 
-        return rateHistory;
+        LocalDate date = LocalDate.now();
+
+        try (InputStreamReader isr = new InputStreamReader(is);
+             BufferedReader br = new BufferedReader(isr)) {
+
+            int rowCount = 0;
+            String line;
+            while ((line = br.readLine()) != null && rowCount++ <= count) {
+                if (rowCount == 1) {
+                    continue;
+                }
+                String[] rowSells = line.replaceAll("\"", "").split(CELL_SEPARATOR);
+
+                if (rateFromFile.getNominal() == 0) {
+                    rateFromFile.setNominal(Integer.parseInt(rowSells[0]));
+                }
+
+                BigDecimal value = readValue(rowSells);
+                date = readDate(rowSells);
+                if (rateFromFile.getRates().size() == 0) {
+                    rateFromFile.setFinishDate(date);
+                }
+                rateFromFile.addRate(date, value);
+            }
+            rateFromFile.setStartDate(date);
+        } catch (IOException e) {
+            logger.error(e.getMessage());
+        }
+
+        return rateFromFile;
+    }
+
+    private InputStream getFileAsIOStream(final CurrencyCode currencyCode)
+    {
+        String fileName = DATASOURCE_PATH + currencyCode.name() + FILE_NAME_SUFFIX;
+        InputStream ioStream = this.getClass()
+                .getClassLoader()
+                .getResourceAsStream(fileName);
+
+        if (ioStream == null) {
+            logger.error(fileName + " is not found");
+        }
+        return ioStream;
+    }
+
+    private LocalDate readDate(String[] rowSells) {
+        String dateValue = rowSells[DATE_ROW_NUMBER];
+        return  LocalDate.parse(dateValue, DATE_FORMATTER);
+    }
+
+    private BigDecimal readValue(String[] rowSells) {
+        String val = rowSells[RATE_ROW_NUMBER].replace(",", ".");
+        return  new BigDecimal(val);
     }
 
     /**
