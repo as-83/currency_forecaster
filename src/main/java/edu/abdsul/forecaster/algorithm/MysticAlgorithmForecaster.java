@@ -77,7 +77,7 @@ public class MysticAlgorithmForecaster implements Forecaster {
             BigDecimal rate = getRateFromPast(rateHistory, date);
             rateSum = rateSum.add(rate);
         }
-        
+
         return rateSum.divide(new BigDecimal(3), BigDecimal.ROUND_UP);
     }
 

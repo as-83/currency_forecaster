@@ -85,7 +85,7 @@
                             <archive>
                                 <manifest>
                                     <mainClass>
-                                        edu.abdsul.forecaster.bot.BotStarter
+                                        edu.abdsul.forecaster.BotStarter
                                     </mainClass>
                                 </manifest>
                             </archive>

@@ -19,7 +19,7 @@ import java.util.List;
  * Класс ForecasterController выполняет прогноз курса валюты
  * на заданный период в днях, по заданному алгоритму
  * прогнозирования  основываясь на исторических данных курса валюты
- * Алгоритм по умолчанию: среднее значение последних семи дней
+ * Алгоритм по умолчанию: инейная регрессия
  * Источник данных по умолчанию - csv-файл
  */
 public class ForecasterController {
@@ -41,7 +41,7 @@ public class ForecasterController {
      * основыванный на исторических данных курса валюты
      *
      * @param commandLine строка содержащая команды
-     * @return Строка с прогнозом курса валюты на заданное количество дней или расположение файла
+     * @return Строка с прогнозом курса валюты на заданное количество дней или расположение png-файла
      */
     public String getForecast(String commandLine) {
 
@@ -66,6 +66,12 @@ public class ForecasterController {
         return resultFormatter.format(forecasts);
     }
 
+    /**
+     * Прогноз курсов выбранных валют, на заданный период
+     *
+     * @param commands список объектов содержащих команды
+     * @return список объектов с прогнозами курса
+     */
     private List<Rate> getForecasts(List<Command> commands) {
         List<Rate> forecasts = new ArrayList<>();
         for (Command command : commands) {

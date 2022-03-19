@@ -1,7 +1,8 @@
 package edu.abdsul.forecaster.parser;
 
-import ch.qos.logback.classic.pattern.LineOfCallerConverter;
 import edu.abdsul.forecaster.domain.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -18,9 +19,11 @@ import java.util.stream.Collectors;
  */
 public class ExtCommandLineParser implements Parser {
 
+    private static final Logger logger = LoggerFactory.getLogger(ExtCommandLineParser.class);
     private static final String ACTION_COMMAND = "RATE";
     private static final String DATE_PATTERN = "^\\d{2}.\\d{2}.\\d{4}$";
     private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("dd.MM.yyyy");
+    public static final int CURRENCY_MAX_COUNT = 5;
     private List<CurrencyCode> currencyCodes;
     private String period;
     private String forecastStartDate;
@@ -40,7 +43,8 @@ public class ExtCommandLineParser implements Parser {
      * Парсинг команд из строки
      *
      * @param commandLine строка с командами вида  "rate USD,TRY -period week -alg moon -output graph"
-     * @return класс Command с полями: код валюты и срок прогноза в днях
+     * @return список объетов класса Command с полями: код валюты, период прогноза,
+     * алгоритм прогнозирования и способ представления результата
      */
     @Override
     public List<Command> parse(String commandLine) {
@@ -48,6 +52,7 @@ public class ExtCommandLineParser implements Parser {
         List<String> commandLineParts = split(commandLine);
 
         if (!isValid(commandLineParts)) {
+            logger.debug("Invalid currency code ore option");
             return Collections.emptyList();
         }
 
@@ -58,12 +63,14 @@ public class ExtCommandLineParser implements Parser {
         return initCommands();
     }
 
+    //Разбиение строки на слова
     private List<String> split(String commandLine) {
         return Arrays.stream(commandLine.trim().toUpperCase().split(" "))
                 .filter(s -> !s.isEmpty())
                 .collect(Collectors.toList());
     }
 
+    //Распределение команд по типу
     private void extractCommands(List<String> commandLineParts) {
         this.currencyCodes = Arrays.stream(commandLineParts.get(1).split(","))
                 .distinct()
@@ -95,6 +102,7 @@ public class ExtCommandLineParser implements Parser {
         }
     }
 
+    //Проверка валидности опций и кода валюты
     private boolean isValid(List<String> commandLineParts) {
         boolean hasAction = commandLineParts.get(0).equals(ACTION_COMMAND);
 
@@ -104,13 +112,12 @@ public class ExtCommandLineParser implements Parser {
 
         boolean correctCurrency = commandLineParts.size() > 1 && Arrays.stream(commandLineParts.get(1).split(","))
                 .allMatch(s -> Arrays.stream(CurrencyCode.values()).anyMatch(c -> s.equalsIgnoreCase(c.name())))
-                && commandLineParts.get(1).split(",").length < 6;
+                && commandLineParts.get(1).split(",").length <= CURRENCY_MAX_COUNT;
 
         return hasAction && correctOptions && correctCurrency;
     }
 
     private List<Command> initCommands() {
-
         List<Command> commands = new ArrayList<>();
         if (!allPartsValid) {
             return commands;
@@ -130,7 +137,7 @@ public class ExtCommandLineParser implements Parser {
             command.setCorrect(true);
             commands.add(command);
         }
-
+        logger.debug("CommandLine is valid");
         return commands;
     }
 
@@ -139,8 +146,9 @@ public class ExtCommandLineParser implements Parser {
         boolean validPeriod = Arrays.stream(ForecastPeriod.values()).anyMatch(f -> f.name().equals(period));
         boolean validOutput = Arrays.stream(OutputType.values()).anyMatch(o -> o.name().equals(output));
 
-        boolean validDate = forecastStartDate.equalsIgnoreCase("TOMORROW") ||
+        boolean validDate = forecastStartDate.equalsIgnoreCase(ForecastPeriod.TOMORROW.name()) ||
                 forecastStartDate.matches(DATE_PATTERN);
+
         allPartsValid = validAlgo && validDate && validPeriod && validOutput;
 
         if (forecastStartDate.matches(DATE_PATTERN)) {
@@ -150,6 +158,7 @@ public class ExtCommandLineParser implements Parser {
                     allPartsValid = false;
                 }
             } catch (Exception e) {
+                logger.debug("Invalid date in commandLine");
                 allPartsValid = false;
             }
         }

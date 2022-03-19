@@ -85,7 +85,7 @@ public class FileDataSource implements DataSource {
                 .getResourceAsStream(fileName);
 
         if (ioStream == null) {
-            logger.error(fileName + " is not found");
+            logger.debug(fileName + " is not found");
         }
         return ioStream;
     }

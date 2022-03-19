@@ -8,9 +8,8 @@ import java.util.List;
 
 public class TextResultFormatter implements ResultFormatter {
 
-
     /**
-     * Форматирует тектовое представление данных результата прогноза
+     * Форматирует данные прогноза
      * Пример: Вт 22.02.2022 - 75,45
      *
      * @param rateList Список обьектов содержащих данные прогнозов курса валют
@@ -27,7 +26,6 @@ public class TextResultFormatter implements ResultFormatter {
         DecimalFormat valueFormatter = new DecimalFormat("###.##");
         DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern(DATE_PATTERN);
 
-
         for (Rate rate : rateList) {
             result.append(rate.getCurrencyCode()).append(" Номинал - ")
                     .append(rate.getNominal()).append("\n");
@@ -39,7 +37,6 @@ public class TextResultFormatter implements ResultFormatter {
                 result.append(date).append(" - ").append(value).append("\n");
             });
         }
-
         return result.toString();
     }
 }

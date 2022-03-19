@@ -13,14 +13,13 @@ import org.slf4j.LoggerFactory;
 import java.io.File;
 
 /**
- * Класс Bot
+ * Класс Bot осуществляет прием запросов и отправку ответов в Telegram
  */
 public class Bot {
     private static final Logger logger = LoggerFactory.getLogger(Bot.class);
     private final TelegramBot bot = new TelegramBot(System.getenv("BOT_TOKEN"));
 
     public void serve() {
-
         logger.info("Bot started");
 
         bot.setUpdatesListener(updates -> {
@@ -30,7 +29,6 @@ public class Bot {
     }
 
     private void process(Update update) {
-        logger.info("update has come");
         ForecasterController forecasterController = new ForecasterController();
 
         if (update.message() != null && update.message().text() != null) {
