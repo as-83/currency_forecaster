@@ -12,7 +12,7 @@ public interface Forecaster {
     /**
      * Прогноз курса валюты основыванный на исторических данных
      *
-     * @param command объект запроса
+     * @param command объект содержащий команды запроса
      * @return прогнозируемые значения курса валюты на заданное количество дней
      */
     Rate getForecast(Command command);

@@ -39,7 +39,7 @@ public class Bot {
 
             String forecast = forecasterController.getForecast(commandLine);
 
-            logger.info("Forecast: {" + forecast + " }");
+            logger.info("Forecast: \n" + forecast);
             long chatId = update.message().chat().id();
 
             BaseRequest request;

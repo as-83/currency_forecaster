@@ -5,6 +5,8 @@ import edu.abdsul.forecaster.domain.Rate;
 import edu.abdsul.forecaster.source.DataSource;
 import edu.abdsul.forecaster.source.FileDataSource;
 import edu.abdsul.forecaster.utils.RateHistoryHelper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -17,6 +19,7 @@ import java.time.LocalDate;
  */
 public class ActualAlgorithmForecaster implements Forecaster {
 
+    private static final Logger logger = LoggerFactory.getLogger(ActualAlgorithmForecaster.class);
     public static final int ALGORITHM_SCOPE = 2;
     private DataSource dataSource = new FileDataSource();
 
@@ -61,7 +64,9 @@ public class ActualAlgorithmForecaster implements Forecaster {
     }
 
     private boolean isDateInScope(LocalDate date) {
-        return date.isBefore(LocalDate.now().plusYears(ALGORITHM_SCOPE))
+        boolean isInScope = date.isBefore(LocalDate.now().plusYears(ALGORITHM_SCOPE))
                 && date.isAfter(LocalDate.now());
+        logger.debug(date + " is  in scope of this algorithm - " + isInScope);
+        return isInScope;
     }
 }

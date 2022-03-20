@@ -13,11 +13,10 @@ import java.time.temporal.ChronoUnit;
 import java.util.stream.DoubleStream;
 
 /**
- * Класс LastSevenAvgForecaster осуществляет вычисление прогнозируемого курса валюты,
+ * Класс LinearRegressionForecaster осуществляет вычисление прогнозируемого курса валюты,
  * основываясь на исторических данных
  * <p>
- * Алгоритм вычисления: Среднее арифметическое
- * значение на основании 7 последних значений
+ * Алгоритм вычисления: Линейная регоессия
  */
 public class LinearRegressionForecaster implements Forecaster {
 

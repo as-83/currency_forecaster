@@ -5,6 +5,8 @@ import edu.abdsul.forecaster.domain.Rate;
 import edu.abdsul.forecaster.source.DataSource;
 import edu.abdsul.forecaster.source.FileDataSource;
 import edu.abdsul.forecaster.utils.FoolMoonCalculator;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -21,7 +23,10 @@ import java.util.Random;
  */
 public class MysticAlgorithmForecaster implements Forecaster {
 
+    private static final Logger logger = LoggerFactory.getLogger(MysticAlgorithmForecaster.class);
     public static final int ALGORITHM_LIMIT = 1;
+    public static final double RANGE_FLOOR_VALUE = 0.9;
+    public static final double RANGE_AMPLITUDE = 0.2;
     private DataSource dataSource = new FileDataSource();
     private Rate forecast;
 
@@ -65,8 +70,8 @@ public class MysticAlgorithmForecaster implements Forecaster {
 
     private void generateNextRates(Command command, BigDecimal avgRate) {
         for (int i = 1; i < command.getForecastPeriod().getDayCount(); i++) {
-            double rand = 0.9 + new Random().nextDouble() * 0.2;
-            BigDecimal rateValue = avgRate.multiply(BigDecimal.valueOf(rand));
+            double rangeValue = RANGE_FLOOR_VALUE + new Random().nextDouble() * RANGE_AMPLITUDE;
+            BigDecimal rateValue = avgRate.multiply(BigDecimal.valueOf(rangeValue));
             forecast.addRate(command.getForecastStartDate().minusDays(i), rateValue);
         }
     }
@@ -105,8 +110,10 @@ public class MysticAlgorithmForecaster implements Forecaster {
     }
 
     private boolean isDateInScope(LocalDate date) {
-        return date.isBefore(LocalDate.now().plusMonths(ALGORITHM_LIMIT))
+        boolean isInScope = date.isBefore(LocalDate.now().plusMonths(ALGORITHM_LIMIT))
                 && date.isAfter(LocalDate.now());
+        logger.debug(date + " is  in scope of this algorithm - " + isInScope);
+        return isInScope;
     }
 
     public void setDataSource(DataSource dataSource) {

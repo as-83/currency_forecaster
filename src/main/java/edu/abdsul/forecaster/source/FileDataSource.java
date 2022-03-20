@@ -111,8 +111,4 @@ public class FileDataSource implements DataSource {
     public Rate getAllRates(CurrencyCode currencyCode) {
         return getLastNRates(currencyCode, Integer.MAX_VALUE);
     }
-
-
-
-
 }
