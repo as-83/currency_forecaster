@@ -1,20 +1,39 @@
 package edu.abdsul.forecaster.domain;
 
+import java.time.LocalDate;
+
 /**
- * Класс Command представляет код валюты,
- * период прогноза  и корректость команды
+ * Класс Command представляет код валюты, период прогноза,
+ * алгоритм прогнозирования, форму вывода результата  и корректость команды
  */
 public class Command {
 
     private boolean correct;
-    private int forecastPeriod;
+    private ForecastPeriod forecastPeriod;
+    private LocalDate forecastStartDate;
     private CurrencyCode currencyCode;
+    private Algorithm algorithm;
+    private OutputType outputType;
 
-    public int getForecastPeriod() {
+    public Command() {
+    }
+
+    public Command(boolean correct, ForecastPeriod forecastPeriod,
+                   LocalDate forecastStartDate, CurrencyCode currencyCode,
+                   Algorithm algorithm, OutputType outputType) {
+        this.correct = correct;
+        this.forecastPeriod = forecastPeriod;
+        this.forecastStartDate = forecastStartDate;
+        this.currencyCode = currencyCode;
+        this.algorithm = algorithm;
+        this.outputType = outputType;
+    }
+
+    public ForecastPeriod getForecastPeriod() {
         return forecastPeriod;
     }
 
-    public void setForecastPeriod(int forecastPeriod) {
+    public void setForecastPeriod(ForecastPeriod forecastPeriod) {
         this.forecastPeriod = forecastPeriod;
     }
 
@@ -34,4 +53,27 @@ public class Command {
         this.correct = correct;
     }
 
+    public Algorithm getAlgorithm() {
+        return algorithm;
+    }
+
+    public void setAlgorithm(Algorithm algorithm) {
+        this.algorithm = algorithm;
+    }
+
+    public OutputType getOutput() {
+        return outputType;
+    }
+
+    public void setOutput(OutputType outputType) {
+        this.outputType = outputType;
+    }
+
+    public LocalDate getForecastStartDate() {
+        return forecastStartDate;
+    }
+
+    public void setForecastStartDate(LocalDate forecastStartDate) {
+        this.forecastStartDate = forecastStartDate;
+    }
 }

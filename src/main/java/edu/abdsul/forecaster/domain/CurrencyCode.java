@@ -6,17 +6,27 @@ package edu.abdsul.forecaster.domain;
 public enum CurrencyCode {
 
     /**
-     * Код доллара США
+     * Доллар США
      */
     USD,
 
     /**
-     * Код Евро
+     * Евро
      */
     EUR,
 
     /**
-     * Код турецкой лиры
+     * Турецкая лира
      */
-    TRY
+    TRY,
+
+    /**
+     * Болгарский лев
+     */
+    BGN,
+
+    /**
+     * Армянский драм
+     */
+    AMD
 }
